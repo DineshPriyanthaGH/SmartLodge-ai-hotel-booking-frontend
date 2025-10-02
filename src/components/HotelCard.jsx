@@ -1,25 +1,17 @@
 import { MapPin, Star } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function HotelCard(props) {
-  // let num = 1;
-  //   const handleClick = () => {
-  //     console.log("I was clicked")
-  //     console.log("Inside handleclick", num)
-  //     num = num + 1;
-  //   }
-  //   console.log("Outside handleclick", num)
-//   const [num, setNum] = useState(0);
+  const navigate = useNavigate();
 
-//   const handleClick = () => {
-//     setNum(5);
-//     console.log(num);
-//     console.log("Hey");
-//   };
+  const handleClick = () => {
+    navigate(`/hotel/${props.hotel.id}`);
+  };
 
   return (
-    <div href={`/hotels/${props.hotel._id}`} className="block group relative">
+    <div onClick={handleClick} className="block group relative cursor-pointer">
       <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
         <img
           src={props.hotel.image}

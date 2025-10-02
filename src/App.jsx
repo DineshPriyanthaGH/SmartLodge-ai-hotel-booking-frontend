@@ -2,24 +2,26 @@ import './App.css'
 import Hero from './components/Hero';
 import HotelListings from './components/HotelListtings';
 import Navigation from './components/Navigation';
+import Footer from './components/Footer';
+import HotelDetail from './components/HotelDetail';
+import { Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Star, MapPin, Award, Users, Heart, Camera } from 'lucide-react';
 
 
-function App() {
- return (
-    <>
-   <Navigation />
-   <main >
-    
-       <Hero />
-    </main>
-    <HotelListings />
+import HomePage from './components/HomePage';
 
-   
-  
+function App() {
+  return (
+    <>
+      <Navigation />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/hotel/:id" element={<HotelDetail />} />
+      </Routes>
+      <Footer />
     </>
-  )
+  );
 }
 
 export default App
