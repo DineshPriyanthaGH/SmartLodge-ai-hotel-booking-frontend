@@ -72,6 +72,7 @@ export default function Hero() {
   };
 
   return (
+    <>
     <div className="relative h-[500px] md:h-[600px] py-1 mx-2 my overflow-hidden rounded-3xl bg-black z-0">
       {/* Background Images */}
       {heroImages.map((image, index) => (
@@ -136,6 +137,106 @@ export default function Hero() {
           ))}
         </div>
       </div>
+
+      {/* Features Section */}
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-white">
+          <div className="text-center">
+            <div className="bg-white/20 backdrop-blur-sm rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <Sparkles className="w-8 h-8" />
+            </div>
+            <h3 className="font-bold text-lg mb-2">AI-Powered Search</h3>
+            <p className="text-sm text-white/80">Smart recommendations based on your preferences</p>
+          </div>
+          <div className="text-center">
+            <div className="bg-white/20 backdrop-blur-sm rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <Plus className="w-8 h-8" />
+            </div>
+            <h3 className="font-bold text-lg mb-2">Best Prices</h3>
+            <p className="text-sm text-white/80">Compare prices from thousands of hotels worldwide</p>
+          </div>
+          <div className="text-center">
+            <div className="bg-white/20 backdrop-blur-sm rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <Sparkles className="w-8 h-8 fill-white" />
+            </div>
+            <h3 className="font-bold text-lg mb-2">Premium Experience</h3>
+            <p className="text-sm text-white/80">Curated selection of luxury accommodations</p>
+          </div>
+        </div>
+      </div>
     </div>
+
+    {/* Popular Destinations Section */}
+    <div className="px-2 py-8">
+      <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-3xl p-8">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Popular Destinations</h2>
+          <p className="text-lg text-gray-600">Explore the world's most sought-after travel destinations</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="relative group cursor-pointer">
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Paris"
+                className="w-full h-full object-cover transition-transform group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-2xl"></div>
+              <div className="absolute bottom-4 left-4 text-white">
+                <h3 className="font-bold text-xl">Paris</h3>
+                <p className="text-sm opacity-90">City of Light</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="relative group cursor-pointer">
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="London"
+                className="w-full h-full object-cover transition-transform group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-2xl"></div>
+              <div className="absolute bottom-4 left-4 text-white">
+                <h3 className="font-bold text-xl">London</h3>
+                <p className="text-sm opacity-90">Historic Elegance</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="relative group cursor-pointer">
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Santorini"
+                className="w-full h-full object-cover transition-transform group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-2xl"></div>
+              <div className="absolute bottom-4 left-4 text-white">
+                <h3 className="font-bold text-xl">Santorini</h3>
+                <p className="text-sm opacity-90">Island Paradise</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="relative group cursor-pointer">
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                alt="Tokyo"
+                className="w-full h-full object-cover transition-transform group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-2xl"></div>
+              <div className="absolute bottom-4 left-4 text-white">
+                <h3 className="font-bold text-xl">Tokyo</h3>
+                <p className="text-sm opacity-90">Modern Metropolis</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </>
   );
 }

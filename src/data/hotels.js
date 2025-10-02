@@ -58,5 +58,25 @@ export const hotels = [
     image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
     amenities: ["WiFi", "Historic Architecture", "Restaurant", "Bar", "Concierge"],
     description: "Charming historic hotel in downtown Boston with elegant Victorian architecture."
+  },
+  {
+    id: 7,
+    name: "Tropical Paradise Resort",
+    location: "Honolulu, HI",
+    rating: 4.9,
+    price: 389,
+    image: "https://images.unsplash.com/photo-1520637836862-4d197d17c52a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+    amenities: ["WiFi", "Private Beach", "Pool", "Spa", "Water Sports", "Restaurant"],
+    description: "Luxurious beachfront resort in Hawaii with pristine beaches and world-class amenities."
+  },
+  {
+    id: 8,
+    name: "Metropolitan Boutique Hotel",
+    location: "San Francisco, CA",
+    rating: 4.6,
+    price: 279,
+    image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+    amenities: ["WiFi", "Rooftop Bar", "Art Gallery", "Restaurant", "Valet Parking", "Concierge"],
+    description: "Stylish boutique hotel in the heart of San Francisco with contemporary design and city views."
   }
 ];
