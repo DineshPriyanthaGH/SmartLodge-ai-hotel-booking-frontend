@@ -72,7 +72,7 @@ export default function Hero() {
   };
 
   return (
-    <div className="relative h-[500px] md:h-[600px] py-3 mx-4 overflow-hidden rounded-3xl bg-black z-0">
+    <div className="relative h-[500px] md:h-[600px] py-1 mx-2 my overflow-hidden rounded-3xl bg-black z-0">
       {/* Background Images */}
       {heroImages.map((image, index) => (
         <div
