@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Star, MapPin, Wifi, Car, Utensils, Dumbbell, Waves, Calendar, Users, CreditCard, ArrowLeft } from 'lucide-react';
+import { Star, MapPin, Wifi, Car, Utensils, Dumbbell, Waves, Calendar, Users, CreditCard, ArrowLeft, Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { hotels } from '../data/hotels';
@@ -11,6 +11,9 @@ function HotelDetail() {
   const [hotel, setHotel] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
+  const [availabilityStatus, setAvailabilityStatus] = useState(null);
+  const [availableRooms, setAvailableRooms] = useState(0);
   const [bookingData, setBookingData] = useState({
     checkIn: '',
     checkOut: '',
@@ -67,6 +70,80 @@ function HotelDetail() {
     }
   }, [hotelImages.length]);
 
+  // Availability checking function
+  const checkAvailability = async () => {
+    if (!bookingData.checkIn || !bookingData.checkOut || !bookingData.guests || !bookingData.rooms) {
+      return;
+    }
+
+    setIsCheckingAvailability(true);
+    setAvailabilityStatus(null);
+
+    // Simulate API call delay
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Simulate availability logic
+      const checkInDate = new Date(bookingData.checkIn);
+      const checkOutDate = new Date(bookingData.checkOut);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to start of day
+      
+      // Check if check-in date is in the past
+      if (checkInDate < today) {
+        setAvailabilityStatus('pastDate');
+        setAvailableRooms(0);
+        return;
+      }
+      
+      // Check if check-out date is before or same as check-in date
+      if (checkOutDate <= checkInDate) {
+        setAvailabilityStatus('invalidRange');
+        setAvailableRooms(0);
+        return;
+      }
+      
+      // Check if stay is too long (more than 30 days)
+      const daysDiff = (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
+      if (daysDiff > 30) {
+        setAvailabilityStatus('tooLong');
+        setAvailableRooms(0);
+        return;
+      }
+
+      // Simulate random availability (80% chance of availability)
+      const isAvailable = Math.random() > 0.2;
+      const maxRooms = Math.floor(Math.random() * 10) + 5; // 5-15 available rooms
+      
+      if (isAvailable && maxRooms >= bookingData.rooms) {
+        setAvailabilityStatus('available');
+        setAvailableRooms(maxRooms);
+      } else {
+        setAvailabilityStatus('unavailable');
+        setAvailableRooms(maxRooms);
+      }
+    } catch (error) {
+      setAvailabilityStatus('error');
+      setAvailableRooms(0);
+    } finally {
+      setIsCheckingAvailability(false);
+    }
+  };
+
+  // Auto-check availability when dates/rooms/guests change
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (bookingData.checkIn && bookingData.checkOut && bookingData.guests && bookingData.rooms) {
+        checkAvailability();
+      } else {
+        setAvailabilityStatus(null);
+        setAvailableRooms(0);
+      }
+    }, 1000); // Debounce for 1 second
+
+    return () => clearTimeout(timer);
+  }, [bookingData.checkIn, bookingData.checkOut, bookingData.guests, bookingData.rooms]);
+
   const handleBookingSubmit = (e) => {
     e.preventDefault();
     // Here you would typically send the booking data to your backend
@@ -98,6 +175,20 @@ function HotelDetail() {
   };
 
   const totalPrice = calculateNights() * hotel?.price * bookingData.rooms;
+
+  // Helper function to get today's date in YYYY-MM-DD format
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
+  // Helper function to get minimum checkout date (day after checkin)
+  const getMinCheckoutDate = () => {
+    if (!bookingData.checkIn) return getTodayDate();
+    const checkInDate = new Date(bookingData.checkIn);
+    checkInDate.setDate(checkInDate.getDate() + 1);
+    return checkInDate.toISOString().split('T')[0];
+  };
 
   if (!hotel) {
     return (
@@ -215,8 +306,10 @@ function HotelDetail() {
                   <Input
                     type="date"
                     value={bookingData.checkIn}
+                    min={getTodayDate()}
                     onChange={(e) => setBookingData({...bookingData, checkIn: e.target.value})}
                     className="w-full"
+                    placeholder="Select check-in date"
                   />
                 </div>
                 
@@ -225,8 +318,10 @@ function HotelDetail() {
                   <Input
                     type="date"
                     value={bookingData.checkOut}
+                    min={getMinCheckoutDate()}
                     onChange={(e) => setBookingData({...bookingData, checkOut: e.target.value})}
                     className="w-full"
+                    placeholder="Select check-out date"
                   />
                 </div>
                 
@@ -254,6 +349,99 @@ function HotelDetail() {
                 </div>
               </div>
 
+              {/* Availability Checker */}
+              {(bookingData.checkIn || bookingData.checkOut || isCheckingAvailability || availabilityStatus) && (
+                <div className="mb-6">
+                  {isCheckingAvailability && (
+                    <div className="flex items-center justify-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <Loader2 className="w-5 h-5 mr-3 animate-spin text-blue-600" />
+                      <span className="text-blue-700 font-medium">Checking availability...</span>
+                    </div>
+                  )}
+
+                  {!isCheckingAvailability && availabilityStatus === 'available' && (
+                    <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                      <div className="flex items-center mb-2">
+                        <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
+                        <span className="text-green-700 font-semibold">Great! Rooms Available</span>
+                      </div>
+                      <p className="text-green-600 text-sm">
+                        {availableRooms} rooms available for your selected dates
+                      </p>
+                    </div>
+                  )}
+
+                  {!isCheckingAvailability && availabilityStatus === 'unavailable' && (
+                    <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                      <div className="flex items-center mb-2">
+                        <XCircle className="w-5 h-5 mr-2 text-red-600" />
+                        <span className="text-red-700 font-semibold">Limited Availability</span>
+                      </div>
+                      <p className="text-red-600 text-sm">
+                        Only {availableRooms} rooms available. Please reduce room count or try different dates.
+                      </p>
+                    </div>
+                  )}
+
+                  {!isCheckingAvailability && availabilityStatus === 'pastDate' && (
+                    <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                      <div className="flex items-center mb-2">
+                        <XCircle className="w-5 h-5 mr-2 text-yellow-600" />
+                        <span className="text-yellow-700 font-semibold">Past Date Selected</span>
+                      </div>
+                      <p className="text-yellow-600 text-sm">
+                        Check-in date cannot be in the past. Please select today or a future date.
+                      </p>
+                    </div>
+                  )}
+
+                  {!isCheckingAvailability && availabilityStatus === 'invalidRange' && (
+                    <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                      <div className="flex items-center mb-2">
+                        <XCircle className="w-5 h-5 mr-2 text-yellow-600" />
+                        <span className="text-yellow-700 font-semibold">Invalid Date Range</span>
+                      </div>
+                      <p className="text-yellow-600 text-sm">
+                        Check-out date must be after check-in date. Please select a valid date range.
+                      </p>
+                    </div>
+                  )}
+
+                  {!isCheckingAvailability && availabilityStatus === 'tooLong' && (
+                    <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                      <div className="flex items-center mb-2">
+                        <XCircle className="w-5 h-5 mr-2 text-yellow-600" />
+                        <span className="text-yellow-700 font-semibold">Stay Too Long</span>
+                      </div>
+                      <p className="text-yellow-600 text-sm">
+                        Maximum stay duration is 30 days. Please select a shorter period.
+                      </p>
+                    </div>
+                  )}
+
+                  {!isCheckingAvailability && availabilityStatus === 'error' && (
+                    <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                      <div className="flex items-center mb-2">
+                        <XCircle className="w-5 h-5 mr-2 text-red-600" />
+                        <span className="text-red-700 font-semibold">Error Checking Availability</span>
+                      </div>
+                      <p className="text-red-600 text-sm">
+                        Unable to check availability. Please try again later.
+                      </p>
+                    </div>
+                  )}
+                  
+                  {availabilityStatus && !isCheckingAvailability && (
+                    <button
+                      onClick={checkAvailability}
+                      className="mt-3 w-full text-sm text-blue-600 hover:text-blue-800 underline transition-colors"
+                    >
+                      Refresh Availability
+                    </button>
+                  )}
+                </div>
+              )}
+
               {/* Price Summary */}
               {calculateNights() > 0 && (
                 <div className="bg-gray-50 rounded-lg p-4 mb-6">
@@ -272,10 +460,45 @@ function HotelDetail() {
 
               <Button 
                 onClick={() => setIsBookingModalOpen(true)}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg font-semibold"
-                disabled={!bookingData.checkIn || !bookingData.checkOut}
+                className={`w-full py-3 text-lg font-semibold transition-all ${
+                  availabilityStatus === 'available' && !isCheckingAvailability
+                    ? 'bg-green-600 hover:bg-green-700 text-white'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                }`}
+                disabled={
+                  !bookingData.checkIn || 
+                  !bookingData.checkOut || 
+                  isCheckingAvailability || 
+                  availabilityStatus === 'unavailable' || 
+                  availabilityStatus === 'pastDate' || 
+                  availabilityStatus === 'invalidRange' || 
+                  availabilityStatus === 'tooLong' || 
+                  availabilityStatus === 'error'
+                }
               >
-                Book Now
+                {isCheckingAvailability ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Checking...
+                  </>
+                ) : availabilityStatus === 'available' ? (
+                  < >
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Book Now
+                  </>
+                ) : availabilityStatus === 'unavailable' ? (
+                  'Not Available'
+                ) : availabilityStatus === 'pastDate' ? (
+                  'Select Future Date'
+                ) : availabilityStatus === 'invalidRange' ? (
+                  'Fix Date Range'
+                ) : availabilityStatus === 'tooLong' ? (
+                  'Reduce Stay Duration'
+                ) : availabilityStatus === 'error' ? (
+                  'Try Again Later'
+                ) : (
+                  'Book Now'
+                )}
               </Button>
             </div>
           </div>
