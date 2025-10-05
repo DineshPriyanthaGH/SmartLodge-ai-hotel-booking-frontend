@@ -146,21 +146,36 @@ function HotelDetail() {
 
   const handleBookingSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically send the booking data to your backend
-    alert('Booking request submitted successfully! We will contact you shortly to confirm your reservation.');
-    setIsBookingModalOpen(false);
-    // Reset form
-    setBookingData({
-      checkIn: '',
-      checkOut: '',
-      guests: 1,
-      rooms: 1,
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      specialRequests: ''
-    });
+    // Save booking data to sessionStorage
+    const bookingInfo = {
+      ...bookingData,
+      hotelId: hotel.id,
+      totalPrice: totalPrice,
+      nights: calculateNights()
+    };
+    
+    sessionStorage.setItem('bookingData', JSON.stringify(bookingInfo));
+    
+    // Navigate to checkout
+    navigate(`/checkout/${hotel.id}`);
+  };
+
+  const handleBookNowClick = () => {
+    if (availabilityStatus === 'available') {
+      // Save current booking data and navigate to checkout
+      const bookingInfo = {
+        checkIn: bookingData.checkIn,
+        checkOut: bookingData.checkOut,
+        guests: bookingData.guests,
+        rooms: bookingData.rooms,
+        hotelId: hotel.id,
+        totalPrice: totalPrice,
+        nights: calculateNights()
+      };
+      
+      sessionStorage.setItem('bookingData', JSON.stringify(bookingInfo));
+      navigate(`/checkout/${hotel.id}`);
+    }
   };
 
   const calculateNights = () => {
@@ -459,7 +474,7 @@ function HotelDetail() {
               )}
 
               <Button 
-                onClick={() => setIsBookingModalOpen(true)}
+                onClick={handleBookNowClick}
                 className={`w-full py-3 text-lg font-semibold transition-all ${
                   availabilityStatus === 'available' && !isCheckingAvailability
                     ? 'bg-green-600 hover:bg-green-700 text-white'
