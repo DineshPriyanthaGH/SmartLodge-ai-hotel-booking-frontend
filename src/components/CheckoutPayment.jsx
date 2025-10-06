@@ -121,7 +121,7 @@ function CheckoutPayment({ hotel, bookingData, onComplete, onBack }) {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <CreditCard className="w-5 h-5 mr-3" />
-                    <span className="font-medium">Credit or Debit Card</span>
+                    <span className="font-medium">Cedit or Debit Card</span>
                   </div>
                   <div className="flex space-x-2">
                     <div className="w-8 h-5 bg-blue-600 rounded text-white text-xs flex items-center justify-center font-bold">VISA</div>
