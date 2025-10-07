@@ -1,14 +1,18 @@
 import { useState } from 'react';
+import { useUser } from '@clerk/clerk-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { 
   CreditCard, Shield, Lock, Calendar, 
   CheckCircle, AlertCircle, Loader2 
 } from 'lucide-react';
+import { bookingAPI } from '../services/api';
 
 function CheckoutPayment({ hotel, bookingData, onComplete, onBack }) {
+  const { user } = useUser();
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState(null);
   const [cardData, setCardData] = useState({
     cardNumber: '',
     expiryDate: '',
@@ -69,28 +73,79 @@ function CheckoutPayment({ hotel, bookingData, onComplete, onBack }) {
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
+    setError(null);
 
-    // Simulate payment processing
     try {
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      // Get Clerk authentication token
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
       
-      // Save booking confirmation
-      const bookingConfirmation = {
-        bookingId: 'BK' + Date.now(),
-        hotel: hotel,
-        bookingData: bookingData,
-        paymentMethod: paymentMethod,
-        totalAmount: finalTotal,
-        paymentStatus: 'confirmed',
-        bookingDate: new Date().toISOString()
+      const token = await user.getToken();
+      
+      // Prepare booking data for API
+      const bookingApiData = {
+        hotel: hotel.id,
+        dates: {
+          checkIn: bookingData.checkIn,
+          checkOut: bookingData.checkOut,
+          nights: bookingData.nights
+        },
+        guests: {
+          adults: bookingData.guests,
+          children: 0
+        },
+        rooms: bookingData.rooms,
+        guestDetails: {
+          firstName: bookingData.firstName,
+          lastName: bookingData.lastName,
+          email: bookingData.email,
+          phone: bookingData.phone
+        },
+        pricing: {
+          subtotal: bookingData.totalPrice,
+          taxes: taxAmount,
+          total: finalTotal,
+          currency: 'USD'
+        },
+        paymentMethod: {
+          type: paymentMethod,
+          status: 'completed'
+        },
+        specialRequests: bookingData.specialRequests || '',
+        status: 'confirmed'
       };
+
+      // Simulate payment processing delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      sessionStorage.setItem('bookingConfirmation', JSON.stringify(bookingConfirmation));
-      sessionStorage.removeItem('bookingData');
+      // Create booking in database
+      const response = await bookingAPI.createBooking(bookingApiData, token);
       
-      onComplete();
+      if (response.success && response.data && response.data.booking) {
+        // Save booking confirmation for success page
+        const bookingConfirmation = {
+          bookingId: response.data.booking._id,
+          bookingReference: response.data.booking.bookingReference,
+          hotel: hotel,
+          bookingData: bookingData,
+          paymentMethod: paymentMethod,
+          totalAmount: finalTotal,
+          paymentStatus: 'confirmed',
+          bookingDate: new Date().toISOString(),
+          databaseBooking: response.data.booking
+        };
+        
+        sessionStorage.setItem('bookingConfirmation', JSON.stringify(bookingConfirmation));
+        sessionStorage.removeItem('bookingData');
+        
+        onComplete();
+      } else {
+        throw new Error(response.message || 'Failed to create booking');
+      }
     } catch (error) {
-      console.error('Payment failed:', error);
+      console.error('Payment/Booking failed:', error);
+      setError(error.message || 'Payment processing failed. Please try again.');
       setIsProcessing(false);
     }
   };
@@ -108,6 +163,16 @@ function CheckoutPayment({ hotel, bookingData, onComplete, onBack }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Payment Form */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Error Display */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="flex items-center">
+                <AlertCircle className="h-5 w-5 text-red-600 mr-2" />
+                <p className="text-red-800">{error}</p>
+              </div>
+            </div>
+          )}
+          
           {/* Payment Method Selection */}
           <div className="bg-gray-50 rounded-2xl p-6">
             <h4 className="text-lg font-semibold mb-4">Payment Method</h4>

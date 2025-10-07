@@ -16,6 +16,7 @@ import SignUpPage from './components/SignUpPage';
 import UserProfilePage from './components/UserProfilePage';
 import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import EmailVerification from './components/EmailVerification';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/booking-success" element={<BookingSuccess />} />
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
+        <Route path="/verify-email" element={<EmailVerification />} />
         <Route 
           path="/user-profile" 
           element={

@@ -3,12 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Star, MapPin, Wifi, Car, Utensils, Dumbbell, Waves, Calendar, Users, CreditCard, ArrowLeft, Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { hotels } from '../data/hotels';
+import { hotelAPI, apiUtils } from '../services/api';
 
 function HotelDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [hotel, setHotel] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
@@ -56,9 +58,33 @@ function HotelDetail() {
     "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
   ].filter(Boolean);
 
+  // Fetch hotel data from API
   useEffect(() => {
-    const foundHotel = hotels.find(h => h.id === parseInt(id));
-    setHotel(foundHotel);
+    const fetchHotel = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const response = await hotelAPI.getHotelById(id);
+        
+        if (response.success && response.data && response.data.hotel) {
+          // Format hotel data for frontend use
+          const formattedHotel = apiUtils.formatHotelData(response.data.hotel);
+          setHotel(formattedHotel);
+        } else {
+          setError('Hotel not found');
+        }
+      } catch (err) {
+        console.error('Error fetching hotel:', err);
+        setError('Failed to load hotel details');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchHotel();
+    }
   }, [id]);
 
   useEffect(() => {
@@ -161,7 +187,25 @@ function HotelDetail() {
   };
 
   const handleBookNowClick = () => {
-    if (availabilityStatus === 'available') {
+    console.log('Book Now clicked!');
+    console.log('Hotel ID:', hotel?.id);
+    console.log('Availability status:', availabilityStatus);
+    console.log('Booking data:', bookingData);
+    
+    if (!hotel?.id) {
+      console.error('Hotel ID is missing!');
+      alert('Error: Hotel information not loaded properly. Please refresh the page.');
+      return;
+    }
+    
+    // Check if required booking data is present
+    if (!bookingData.checkIn || !bookingData.checkOut) {
+      alert('Please select check-in and check-out dates before booking.');
+      return;
+    }
+    
+    // Allow booking if availability is available OR if no check has been done yet
+    if (availabilityStatus === 'available' || !availabilityStatus) {
       // Save current booking data and navigate to checkout
       const bookingInfo = {
         checkIn: bookingData.checkIn,
@@ -173,8 +217,13 @@ function HotelDetail() {
         nights: calculateNights()
       };
       
+      console.log('Booking info to save:', bookingInfo);
       sessionStorage.setItem('bookingData', JSON.stringify(bookingInfo));
+      console.log('Navigating to:', `/checkout/${hotel.id}`);
       navigate(`/checkout/${hotel.id}`);
+    } else {
+      console.log('Availability status prevents booking:', availabilityStatus);
+      alert(`Cannot proceed with booking. Status: ${availabilityStatus}. Please check your dates and try again.`);
     }
   };
 
@@ -205,11 +254,27 @@ function HotelDetail() {
     return checkInDate.toISOString().split('T')[0];
   };
 
-  if (!hotel) {
+  // Loading state
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Hotel not found</h2>
+          <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-blue-600" />
+          <h2 className="text-2xl font-bold mb-2">Loading hotel details...</h2>
+          <p className="text-gray-600">Please wait while we fetch the information</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error || !hotel) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <XCircle className="w-16 h-16 mx-auto mb-4 text-red-600" />
+          <h2 className="text-2xl font-bold mb-4">{error || 'Hotel not found'}</h2>
+          <p className="text-gray-600 mb-6">We couldn't find the hotel you're looking for.</p>
           <Button onClick={() => navigate('/')}>Back to Home</Button>
         </div>
       </div>
@@ -483,12 +548,7 @@ function HotelDetail() {
                 disabled={
                   !bookingData.checkIn || 
                   !bookingData.checkOut || 
-                  isCheckingAvailability || 
-                  availabilityStatus === 'unavailable' || 
-                  availabilityStatus === 'pastDate' || 
-                  availabilityStatus === 'invalidRange' || 
-                  availabilityStatus === 'tooLong' || 
-                  availabilityStatus === 'error'
+                  isCheckingAvailability
                 }
               >
                 {isCheckingAvailability ? (
@@ -497,12 +557,17 @@ function HotelDetail() {
                     Checking...
                   </>
                 ) : availabilityStatus === 'available' ? (
-                  < >
+                  <>
                     <CheckCircle className="w-4 h-4 mr-2" />
-                    Book Now
+                    Book Now - Available
+                  </>
+                ) : !availabilityStatus && bookingData.checkIn && bookingData.checkOut ? (
+                  <>
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Proceed to Checkout
                   </>
                 ) : availabilityStatus === 'unavailable' ? (
-                  'Not Available'
+                  'Limited Availability'
                 ) : availabilityStatus === 'pastDate' ? (
                   'Select Future Date'
                 ) : availabilityStatus === 'invalidRange' ? (
@@ -512,7 +577,7 @@ function HotelDetail() {
                 ) : availabilityStatus === 'error' ? (
                   'Try Again Later'
                 ) : (
-                  'Book Now'
+                  'Select Dates to Continue'
                 )}
               </Button>
             </div>

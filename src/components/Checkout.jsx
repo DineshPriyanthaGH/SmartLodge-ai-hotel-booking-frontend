@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Check, User, CreditCard, FileText, Loader2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { hotels } from '../data/hotels';
+import { hotelAPI, apiUtils } from '../services/api';
 import CheckoutAuth from './CheckoutAuth';
 import CheckoutSummary from './CheckoutSummary';
 import CheckoutPayment from './CheckoutPayment';
@@ -13,6 +13,8 @@ function Checkout() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [hotel, setHotel] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [bookingData, setBookingData] = useState({
     checkIn: '',
@@ -34,20 +36,41 @@ function Checkout() {
     { number: 3, title: 'Payment', icon: CreditCard, description: 'Complete payment' }
   ];
 
+  // Fetch hotel data and booking info
   useEffect(() => {
-    // Get booking data from sessionStorage or URL params
-    const savedBookingData = sessionStorage.getItem('bookingData');
-    const foundHotel = hotels.find(h => h.id === parseInt(id));
-    
-    if (savedBookingData) {
-      setBookingData(JSON.parse(savedBookingData));
-    }
-    
-    if (foundHotel) {
-      setHotel(foundHotel);
-    } else {
-      // Redirect to home if hotel not found
-      navigate('/');
+    const fetchHotelAndBookingData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Get booking data from sessionStorage
+        const savedBookingData = sessionStorage.getItem('bookingData');
+        if (savedBookingData) {
+          setBookingData(JSON.parse(savedBookingData));
+        }
+        
+        // Fetch hotel data from API
+        const response = await hotelAPI.getHotelById(id);
+        
+        if (response.success && response.data && response.data.hotel) {
+          const formattedHotel = apiUtils.formatHotelData(response.data.hotel);
+          setHotel(formattedHotel);
+        } else {
+          setError('Hotel not found');
+          // Redirect to home if hotel not found
+          setTimeout(() => navigate('/'), 2000);
+        }
+      } catch (err) {
+        console.error('Error fetching hotel:', err);
+        setError('Failed to load hotel information');
+        setTimeout(() => navigate('/'), 2000);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchHotelAndBookingData();
     }
 
     // Check if user is already logged in (simulate with localStorage for demo)
@@ -80,12 +103,31 @@ function Checkout() {
     }
   };
 
-  if (!hotel) {
+  // Loading state
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-4">Loading...</h2>
+          <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-blue-600" />
+          <h2 className="text-2xl font-bold mb-2">Loading checkout...</h2>
+          <p className="text-gray-600">Preparing your booking details</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error || !hotel) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-600 text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold mb-4">{error || 'Hotel not found'}</h2>
+          <p className="text-gray-600 mb-6">We couldn't load the hotel information for checkout.</p>
+          <Button onClick={() => navigate('/')} className="bg-blue-600 hover:bg-blue-700">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Home
+          </Button>
         </div>
       </div>
     );

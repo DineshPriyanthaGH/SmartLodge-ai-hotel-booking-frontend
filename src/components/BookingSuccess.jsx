@@ -279,7 +279,7 @@ function BookingSuccess() {
           </Button>
           
           <Button
-            onClick={() => navigate('/my-bookings')}
+            onClick={() => navigate('/dashboard')}
             variant="outline"
             className="border-gray-300 hover:bg-gray-50 px-8 py-3 text-lg"
           >
