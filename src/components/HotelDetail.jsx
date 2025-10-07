@@ -4,8 +4,9 @@ import { Star, MapPin, Wifi, Car, Utensils, Dumbbell, Waves, Calendar, Users, Cr
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { hotelAPI, apiUtils } from '../services/api';
+import ProtectedLayout from './ProtectedLayout';
 
-function HotelDetail() {
+function HotelDetailContent() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [hotel, setHotel] = useState(null);
@@ -259,9 +260,8 @@ function HotelDetail() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-blue-600" />
-          <h2 className="text-2xl font-bold mb-2">Loading hotel details...</h2>
-          <p className="text-gray-600">Please wait while we fetch the information</p>
+          <Loader2 className="w-8 h-8 mx-auto mb-4 text-blue-600 animate-spin" />
+          <p className="text-gray-600">Loading hotel details...</p>
         </div>
       </div>
     );
@@ -695,6 +695,14 @@ function HotelDetail() {
         </div>
       )}
     </div>
+  );
+}
+
+function HotelDetail() {
+  return (
+    <ProtectedLayout skeletonType="hotelDetail">
+      <HotelDetailContent />
+    </ProtectedLayout>
   );
 }
 

@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react'
 import { Calendar, MapPin, Star, CreditCard, RefreshCw, AlertCircle } from 'lucide-react'
 import { Button } from './ui/button'
 import { bookingAPI, apiUtils } from '../services/api'
+import ProtectedLayout from './ProtectedLayout'
 
-export default function Dashboard() {
+function DashboardContent() {
   const { user } = useUser()
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
@@ -225,4 +226,12 @@ export default function Dashboard() {
       </div>
     </div>
   )
+}
+
+export default function Dashboard() {
+  return (
+    <ProtectedLayout skeletonType="dashboard">
+      <DashboardContent />
+    </ProtectedLayout>
+  );
 }

@@ -1,23 +1,63 @@
 // API configuration
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
-// Generic API request function
+// Get Clerk session token
+async function getClerkToken() {
+  try {
+    // Method 1: Get token from Clerk session
+    if (window.Clerk && window.Clerk.session) {
+      const token = await window.Clerk.session.getToken();
+      if (token) {
+        return token;
+      }
+    }
+    
+    // Method 2: Fallback to sessionStorage
+    const storedToken = sessionStorage.getItem('clerk-session-token');
+    if (storedToken) {
+      return storedToken;
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Error getting Clerk token:', error);
+    return null;
+  }
+}
+
+// Generic API request function with Clerk authentication
 async function apiRequest(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
+  
+  // Get authentication token
+  const token = await getClerkToken();
   
   const config = {
     headers: {
       'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
       ...options.headers,
     },
     ...options,
   };
 
   try {
+    console.log(`API Request: ${options.method || 'GET'} ${endpoint}`, {
+      hasToken: !!token,
+      headers: config.headers
+    });
+    
     const response = await fetch(url, config);
     const data = await response.json();
     
     if (!response.ok) {
+      if (response.status === 401) {
+        console.error('Authentication failed - redirecting to login');
+        // Clear any stored tokens
+        sessionStorage.removeItem('clerk-session-token');
+        // Optionally redirect to login or refresh page
+        window.location.href = '/sign-in';
+      }
       throw new Error(data.message || `HTTP error! status: ${response.status}`);
     }
     
