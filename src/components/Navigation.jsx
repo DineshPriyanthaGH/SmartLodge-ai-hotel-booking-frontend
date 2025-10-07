@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
-
+import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from '@clerk/clerk-react';
 import { Menu, Globe, X } from "lucide-react";
-
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 function Navigation() {
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user } = useUser();
+  const menuRef = useRef(null);
 
 
  
@@ -32,21 +33,37 @@ function Navigation() {
           EN
         </Button>
       
-        <Button
-          variant="ghost"
-          size="sm"
-          asChild
-          className="text-xs hidden md:flex"
-        >
-          <a href="/sign-in">Log In</a>
-        </Button>
-        <Button
-          size="sm"
-          asChild
-          className="bg-white text-black hover:bg-gray-200 text-xs hidden md:flex"
-        >
-          <a href="/sign-up">Sign Up</a>
-        </Button>
+        <SignedOut>
+          <SignInButton mode="modal">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs hidden md:flex"
+            >
+              Log In
+            </Button>
+          </SignInButton>
+          <Link to="/sign-up">
+            <Button
+              size="sm"
+              className="bg-white text-black hover:bg-gray-200 text-xs hidden md:flex"
+            >
+              Sign Up
+            </Button>
+          </Link>
+        </SignedOut>
+        <SignedIn>
+          <span className="text-white text-sm mr-2 hidden md:block">
+            Welcome, {user?.firstName || 'User'}!
+          </span>
+          <UserButton 
+            appearance={{
+              elements: {
+                avatarBox: "w-8 h-8"
+              }
+            }}
+          />
+        </SignedIn>
         
         <div className="relative md:hidden">
           <Button
@@ -101,21 +118,45 @@ function Navigation() {
                   EN
                 </Button>
                 
-                <a
-                  href="/sign-in"
-                  className="text-sm font-medium hover:text-gray-300 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Log In
-                </a>
-                <Button
-                  size="sm"
-                  className="bg-white text-black hover:bg-gray-200 w-full mt-2"
-                  asChild
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <a to="/sign-up">Sign Up</a>
-                </Button>
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <button
+                      className="text-sm font-medium hover:text-gray-300 transition-colors text-left"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Log In
+                    </button>
+                  </SignInButton>
+                  <Button
+                    size="sm"
+                    className="bg-white text-black hover:bg-gray-200 w-full mt-2"
+                    asChild
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/sign-up">Sign Up</Link>
+                  </Button>
+                </SignedOut>
+                <SignedIn>
+                  <div className="flex items-center space-x-2 px-2 py-1">
+                    <UserButton 
+                      appearance={{
+                        elements: {
+                          avatarBox: "w-6 h-6"
+                        }
+                      }}
+                    />
+                    <span className="text-sm">
+                      {user?.firstName || 'User'}
+                    </span>
+                  </div>
+                  <Link
+                    to="/dashboard"
+                    className="text-sm font-medium hover:text-gray-300 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                </SignedIn>
            
               </div>
             </div>
