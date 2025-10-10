@@ -200,6 +200,56 @@ export const paymentAPI = {
   }
 };
 
+// Review API functions
+export const reviewAPI = {
+  // Create a new review
+  createReview: async (reviewData) => {
+    return apiRequest('/reviews', {
+      method: 'POST',
+      body: JSON.stringify(reviewData),
+    });
+  },
+
+  // Get reviews for a hotel
+  getHotelReviews: async (hotelId, params = {}) => {
+    const queryParams = new URLSearchParams(params).toString();
+    const endpoint = `/reviews/hotel/${hotelId}${queryParams ? `?${queryParams}` : ''}`;
+    return apiRequest(endpoint);
+  },
+
+  // Get review statistics for a hotel
+  getReviewStats: async (hotelId) => {
+    return apiRequest(`/reviews/hotel/${hotelId}/stats`);
+  },
+
+  // Get user's reviews
+  getUserReviews: async () => {
+    return apiRequest('/reviews/my-reviews');
+  },
+
+  // Update a review
+  updateReview: async (reviewId, reviewData) => {
+    return apiRequest(`/reviews/${reviewId}`, {
+      method: 'PUT',
+      body: JSON.stringify(reviewData),
+    });
+  },
+
+  // Delete a review
+  deleteReview: async (reviewId) => {
+    return apiRequest(`/reviews/${reviewId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // Mark review as helpful
+  markHelpful: async (reviewId) => {
+    return apiRequest(`/reviews/${reviewId}/helpful`, {
+      method: 'POST',
+    });
+  }
+};
+
 // Utility functions
 export const apiUtils = {
   // Format hotel data for frontend
@@ -248,5 +298,6 @@ export default {
   bookingAPI,
   userAPI,
   paymentAPI,
+  reviewAPI,
   apiUtils
 };

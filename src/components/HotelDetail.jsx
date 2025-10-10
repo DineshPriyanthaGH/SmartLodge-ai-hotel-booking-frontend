@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Star, MapPin, Wifi, Car, Utensils, Dumbbell, Waves, Calendar, Users, CreditCard, ArrowLeft, Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { Star, MapPin, Wifi, Car, Utensils, Dumbbell, Waves, Calendar, Users, CreditCard, ArrowLeft, Loader2, CheckCircle, XCircle, MessageCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { hotelAPI, apiUtils } from '../services/api';
+import api from '../services/api';
+
+const { hotelAPI, reviewAPI, apiUtils } = api;
 import ProtectedLayout from './ProtectedLayout';
+import ReviewModal from './ReviewModal';
 
 function HotelDetailContent() {
   const { id } = useParams();
@@ -17,6 +20,7 @@ function HotelDetailContent() {
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
   const [availabilityStatus, setAvailabilityStatus] = useState(null);
   const [availableRooms, setAvailableRooms] = useState(0);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [bookingData, setBookingData] = useState({
     checkIn: '',
     checkOut: '',
@@ -228,6 +232,25 @@ function HotelDetailContent() {
     }
   };
 
+  const handleReviewSubmit = async (reviewData) => {
+    try {
+      console.log('Submitting review:', reviewData);
+      await reviewAPI.createReview(reviewData);
+      setIsReviewModalOpen(false);
+      
+      // Show success message
+      alert('Thank you for your review! It has been submitted successfully.');
+      
+      // Optionally refresh hotel data to update ratings
+      // You can uncomment this if you want to refresh the hotel data immediately
+      // const updatedHotel = await hotelAPI.getHotel(id);
+      // setHotel(updatedHotel.data);
+    } catch (error) {
+      console.error('Failed to submit review:', error);
+      alert('Failed to submit review. Please try again.');
+    }
+  };
+
   const calculateNights = () => {
     if (bookingData.checkIn && bookingData.checkOut) {
       const checkIn = new Date(bookingData.checkIn);
@@ -282,19 +305,30 @@ function HotelDetailContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen bg-gray-50 ${isReviewModalOpen ? 'blur-sm' : ''}`}>
       {/* Header */}
       <div className="bg-white shadow-sm p-4">
-        <div className="max-w-6xl mx-auto flex items-center">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="flex items-center">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/')}
+              className="mr-4"
+            >
+              <ArrowLeft className="w-5 h-5 mr-2" />
+              Back to Hotels
+            </Button>
+            <h1 className="text-2xl font-bold">Hotel Details</h1>
+          </div>
+          
+          {/* Leave User Experience Button */}
           <Button 
-            variant="ghost" 
-            onClick={() => navigate('/')}
-            className="mr-4"
+            onClick={() => setIsReviewModalOpen(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-semibold flex items-center space-x-2 shadow-lg transition-all duration-200 hover:scale-105"
           >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Back to Hotels
+            <MessageCircle className="w-5 h-5" />
+            <span>Leave User Experience</span>
           </Button>
-          <h1 className="text-2xl font-bold">Hotel Details</h1>
         </div>
       </div>
 
@@ -693,6 +727,17 @@ function HotelDetailContent() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Review Modal */}
+      {isReviewModalOpen && (
+        <ReviewModal
+          isOpen={isReviewModalOpen}
+          onClose={() => setIsReviewModalOpen(false)}
+          onSubmit={handleReviewSubmit}
+          hotelId={hotel.id}
+          hotelName={hotel.name}
+        />
       )}
     </div>
   );
