@@ -1,5 +1,16 @@
+import axios from 'axios';
+
 // API configuration
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+
+// Create axios instance with default config
+const axiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  timeout: 10000, // 10 second timeout
+});
 
 // Get Clerk session token
 async function getClerkToken() {
@@ -25,43 +36,61 @@ async function getClerkToken() {
   }
 }
 
-// Generic API request function with Clerk authentication
-async function apiRequest(endpoint, options = {}) {
-  const url = `${API_BASE_URL}${endpoint}`;
-  
-  // Get authentication token
-  const token = await getClerkToken();
-  
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
-    },
-    ...options,
-  };
-
-  try {
-    console.log(`API Request: ${options.method || 'GET'} ${endpoint}`, {
+// Add request interceptor to automatically include auth token
+axiosInstance.interceptors.request.use(
+  async (config) => {
+    const token = await getClerkToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    
+    console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`, {
       hasToken: !!token,
       headers: config.headers
     });
     
-    const response = await fetch(url, config);
-    const data = await response.json();
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor to handle errors globally
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response.data;
+  },
+  (error) => {
+    console.error('API Request Error:', error.response || error);
     
-    if (!response.ok) {
-      if (response.status === 401) {
-        console.error('Authentication failed - redirecting to login');
-        // Clear any stored tokens
-        sessionStorage.removeItem('clerk-session-token');
-        // Optionally redirect to login or refresh page
-        window.location.href = '/sign-in';
-      }
-      throw new Error(data.message || `HTTP error! status: ${response.status}`);
+    if (error.response?.status === 401) {
+      console.error('Authentication failed - redirecting to login');
+      // Clear any stored tokens
+      sessionStorage.removeItem('clerk-session-token');
+      // Optionally redirect to login
+      window.location.href = '/sign-in';
     }
     
-    return data;
+    throw error;
+  }
+);
+
+// Generic API request function with Clerk authentication
+async function apiRequest(endpoint, options = {}) {
+  try {
+    const { method = 'GET', data, params, headers = {}, ...axiosOptions } = options;
+    
+    const config = {
+      method,
+      url: endpoint,
+      data,
+      params,
+      headers,
+      ...axiosOptions,
+    };
+
+    return await axiosInstance(config);
   } catch (error) {
     console.error(`API Request Error (${endpoint}):`, error);
     throw error;
@@ -71,10 +100,10 @@ async function apiRequest(endpoint, options = {}) {
 // Hotel API functions
 export const hotelAPI = {
   // Get all hotels
-  getAllHotels: async (params = {}) => {
-    const queryParams = new URLSearchParams(params).toString();
-    const endpoint = `/hotels${queryParams ? `?${queryParams}` : ''}`;
-    return apiRequest(endpoint);
+  getAllHotels: async (queryParams = {}) => {
+    return apiRequest('/hotels', {
+      params: queryParams,
+    });
   },
 
   // Get hotel by ID
@@ -84,20 +113,23 @@ export const hotelAPI = {
 
   // Search hotels
   searchHotels: async (searchParams) => {
-    const queryParams = new URLSearchParams(searchParams).toString();
-    return apiRequest(`/hotels/search?${queryParams}`);
+    return apiRequest('/hotels/search', {
+      params: searchParams,
+    });
   },
 
   // Get featured hotels
   getFeaturedHotels: async (limit = 10) => {
-    return apiRequest(`/hotels/featured?limit=${limit}`);
+    return apiRequest('/hotels/featured', {
+      params: { limit },
+    });
   },
 
   // Check hotel availability
   checkAvailability: async (hotelId, checkIn, checkOut, guests) => {
     return apiRequest(`/hotels/${hotelId}/availability`, {
       method: 'POST',
-      body: JSON.stringify({ checkIn, checkOut, guests }),
+      data: { checkIn, checkOut, guests },
     });
   }
 };
@@ -105,41 +137,27 @@ export const hotelAPI = {
 // Booking API functions
 export const bookingAPI = {
   // Create a new booking
-  createBooking: async (bookingData, authToken) => {
+  createBooking: async (bookingData) => {
     return apiRequest('/bookings', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-      body: JSON.stringify(bookingData),
+      data: bookingData,
     });
   },
 
   // Get user's bookings
-  getUserBookings: async (authToken) => {
-    return apiRequest('/bookings/my-bookings', {
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-    });
+  getUserBookings: async () => {
+    return apiRequest('/bookings/my-bookings');
   },
 
   // Get booking by ID
-  getBookingById: async (bookingId, authToken) => {
-    return apiRequest(`/bookings/${bookingId}`, {
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-    });
+  getBookingById: async (bookingId) => {
+    return apiRequest(`/bookings/${bookingId}`);
   },
 
   // Cancel booking
-  cancelBooking: async (bookingId, authToken) => {
+  cancelBooking: async (bookingId) => {
     return apiRequest(`/bookings/${bookingId}/cancel`, {
       method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
     });
   }
 };
@@ -150,52 +168,44 @@ export const userAPI = {
   syncClerkUser: async (userData) => {
     return apiRequest('/auth/sync-clerk-user', {
       method: 'POST',
-      body: JSON.stringify(userData),
+      data: userData,
     });
   },
 
   // Get user profile
-  getUserProfile: async (authToken) => {
-    return apiRequest('/users/profile', {
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-    });
+  getUserProfile: async () => {
+    return apiRequest('/users/profile');
   },
 
   // Update user profile
-  updateUserProfile: async (profileData, authToken) => {
+  updateUserProfile: async (profileData) => {
     return apiRequest('/users/profile', {
       method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-      body: JSON.stringify(profileData),
+      data: profileData,
     });
+  },
+
+  // Get user statistics
+  getUserStats: async () => {
+    return apiRequest('/users/stats');
   }
 };
 
 // Payment API functions
 export const paymentAPI = {
   // Create payment intent
-  createPaymentIntent: async (amount, currency, authToken) => {
+  createPaymentIntent: async (amount, currency = 'usd') => {
     return apiRequest('/payments/create-intent', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-      body: JSON.stringify({ amount, currency }),
+      data: { amount, currency },
     });
   },
 
   // Confirm payment
-  confirmPayment: async (paymentIntentId, authToken) => {
+  confirmPayment: async (paymentIntentId) => {
     return apiRequest('/payments/confirm', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-      body: JSON.stringify({ paymentIntentId }),
+      data: { paymentIntentId },
     });
   }
 };
@@ -206,15 +216,15 @@ export const reviewAPI = {
   createReview: async (reviewData) => {
     return apiRequest('/reviews', {
       method: 'POST',
-      body: JSON.stringify(reviewData),
+      data: reviewData,
     });
   },
 
   // Get reviews for a hotel
-  getHotelReviews: async (hotelId, params = {}) => {
-    const queryParams = new URLSearchParams(params).toString();
-    const endpoint = `/reviews/hotel/${hotelId}${queryParams ? `?${queryParams}` : ''}`;
-    return apiRequest(endpoint);
+  getHotelReviews: async (hotelId, queryParams = {}) => {
+    return apiRequest(`/reviews/hotel/${hotelId}`, {
+      params: queryParams,
+    });
   },
 
   // Get review statistics for a hotel
@@ -223,15 +233,17 @@ export const reviewAPI = {
   },
 
   // Get user's reviews
-  getUserReviews: async () => {
-    return apiRequest('/reviews/my-reviews');
+  getUserReviews: async (queryParams = {}) => {
+    return apiRequest('/reviews/my-reviews', {
+      params: queryParams,
+    });
   },
 
   // Update a review
   updateReview: async (reviewId, reviewData) => {
     return apiRequest(`/reviews/${reviewId}`, {
       method: 'PUT',
-      body: JSON.stringify(reviewData),
+      data: reviewData,
     });
   },
 
@@ -247,6 +259,11 @@ export const reviewAPI = {
     return apiRequest(`/reviews/${reviewId}/helpful`, {
       method: 'POST',
     });
+  },
+
+  // Get eligible bookings for review
+  getEligibleBookings: async () => {
+    return apiRequest('/reviews/eligible-bookings');
   }
 };
 

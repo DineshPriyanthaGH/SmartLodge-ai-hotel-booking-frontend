@@ -23,7 +23,7 @@ const ReviewModal = ({ isOpen, onClose, onSubmit, hotelId, hotelName }) => {
       roomType: '',
       stayDuration: 1,
       travelType: 'leisure',
-      stayMonth: ''
+      stayMonth: 'October'  // Default to current month
     }
   });
   
@@ -137,7 +137,7 @@ const ReviewModal = ({ isOpen, onClose, onSubmit, hotelId, hotelName }) => {
     try {
       await onSubmit({
         ...formData,
-        hotelId,
+        hotel: hotelId,  // Change hotelId to hotel to match backend schema
         pros: formData.pros.filter(pro => pro.trim()),
         cons: formData.cons.filter(con => con.trim())
       });
@@ -365,8 +365,8 @@ const ReviewModal = ({ isOpen, onClose, onSubmit, hotelId, hotelName }) => {
                   value={formData.stayDetails.stayMonth}
                   onChange={(e) => handleStayDetailsChange('stayMonth', e.target.value)}
                   className="w-full p-3 rounded-lg border-2 border-gray-200 focus:border-blue-500"
+                  required
                 >
-                  <option value="">Select month</option>
                   {months.map((month) => (
                     <option key={month} value={month}>
                       {month}
