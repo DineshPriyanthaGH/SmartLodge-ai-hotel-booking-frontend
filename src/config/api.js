@@ -3,13 +3,13 @@ const API_CONFIG = {
   // Use environment variable with fallback to the actual working backend URL
   BASE_URL: import.meta.env.VITE_API_URL || 'https://smart-lodge-ai-hotel-booking-backen-dusky.vercel.app',
   
-  // Admin endpoints
+  // Admin endpoints (note: these are direct paths without /api/ prefix)
   ADMIN: {
-    LOGIN: '/admin/login',
-    DASHBOARD: '/admin/dashboard',
-    HOTELS: '/admin/hotels',
-    ROOMS: '/admin/rooms',
-    BOOKINGS: '/admin/bookings'
+    LOGIN: 'admin/login',
+    DASHBOARD: 'admin/dashboard', 
+    HOTELS: 'admin/hotels',
+    ROOMS: 'admin/rooms',
+    BOOKINGS: 'admin/bookings'
   }
 };
 
