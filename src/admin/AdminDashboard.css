@@ -1,6 +1,7 @@
 .admin-dashboard {
   min-height: 100vh;
-  background: #f8fafc;
+  background: #0f0f0f;
+  color: #ffffff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -25,8 +26,8 @@
 
 .retry-button {
   padding: 12px 24px;
-  background: #667eea;
-  color: white;
+  background: #ffffff;
+  color: #000000;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -35,13 +36,13 @@
 }
 
 .admin-header {
-  background: white;
-  border-bottom: 1px solid #e2e8f0;
+  background: #1a1a1a;
+  border-bottom: 1px solid #333;
   padding: 16px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .header-left {
@@ -52,14 +53,14 @@
 
 .header-left h1 {
   margin: 0;
-  color: #2d3748;
+  color: #ffffff;
   font-size: 24px;
   font-weight: 700;
 }
 
 .admin-badge {
-  background: #667eea;
-  color: white;
+  background: #ffffff;
+  color: #000000;
   padding: 4px 12px;
   border-radius: 16px;
   font-size: 12px;
@@ -73,12 +74,12 @@
 }
 
 .last-updated {
-  color: #718096;
+  color: #a0a0a0;
   font-size: 14px;
 }
 
 .logout-button {
-  background: #e53e3e;
+  background: #ff4444;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -90,12 +91,12 @@
 }
 
 .logout-button:hover {
-  background: #c53030;
+  background: #cc3333;
 }
 
 .admin-nav {
-  background: white;
-  border-bottom: 1px solid #e2e8f0;
+  background: #1a1a1a;
+  border-bottom: 1px solid #333;
   padding: 0 24px;
   display: flex;
   gap: 8px;
@@ -109,20 +110,20 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
-  color: #718096;
+  color: #a0a0a0;
   border-bottom: 3px solid transparent;
   transition: all 0.2s;
   white-space: nowrap;
 }
 
 .nav-item:hover {
-  color: #667eea;
-  background: #f7fafc;
+  color: #ffffff;
+  background: #2a2a2a;
 }
 
 .nav-item.active {
-  color: #667eea;
-  border-bottom-color: #667eea;
+  color: #ffffff;
+  border-bottom-color: #ffffff;
 }
 
 .admin-main {
@@ -139,10 +140,11 @@
 }
 
 .stat-card {
-  background: white;
+  background: #1a1a1a;
+  border: 1px solid #333;
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   gap: 20px;
@@ -151,7 +153,8 @@
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border-color: #555;
 }
 
 .stat-icon {
@@ -162,12 +165,12 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #f7fafc;
+  background: #2a2a2a;
 }
 
 .stat-content h3 {
   margin: 0 0 8px 0;
-  color: #718096;
+  color: #a0a0a0;
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
@@ -176,7 +179,7 @@
 .stat-number {
   font-size: 32px;
   font-weight: 700;
-  color: #2d3748;
+  color: #ffffff;
   margin-bottom: 8px;
 }
 
@@ -192,19 +195,19 @@
 }
 
 .stat-detail.good {
-  color: #38a169;
+  color: #4ade80;
 }
 
 .stat-detail.warning {
-  color: #ed8936;
+  color: #fbbf24;
 }
 
 .stat-detail.neutral {
-  color: #718096;
+  color: #a0a0a0;
 }
 
 .stat-detail.info {
-  color: #3182ce;
+  color: #60a5fa;
 }
 
 .charts-section {
@@ -214,17 +217,72 @@
 }
 
 .chart-card {
-  background: white;
+  background: #1a1a1a;
+  border: 1px solid #333;
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .chart-card h3 {
   margin: 0 0 24px 0;
-  color: #2d3748;
+  color: #ffffff;
   font-size: 18px;
   font-weight: 700;
+}
+
+.overview-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.overview-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #333;
+}
+
+.overview-item:last-child {
+  border-bottom: none;
+}
+
+.overview-label {
+  color: #a0a0a0;
+  font-size: 14px;
+}
+
+.overview-value {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quick-action-btn {
+  background: #333;
+  color: #ffffff;
+  border: 1px solid #555;
+  padding: 16px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.quick-action-btn:hover {
+  background: #555;
+  border-color: #777;
+  transform: translateY(-1px);
 }
 
 .revenue-chart {
@@ -245,7 +303,7 @@
 }
 
 .bar {
-  background: linear-gradient(to top, #667eea, #764ba2);
+  background: linear-gradient(to top, #ffffff, #e0e0e0);
   width: 100%;
   border-radius: 4px 4px 0 0;
   min-height: 10px;
@@ -255,12 +313,12 @@
 .month-label {
   font-size: 12px;
   font-weight: 600;
-  color: #718096;
+  color: #a0a0a0;
 }
 
 .month-value {
   font-size: 10px;
-  color: #a0aec0;
+  color: #666;
 }
 
 .top-hotels {
@@ -274,20 +332,21 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #333;
   border-radius: 8px;
   transition: all 0.2s;
+  background: #2a2a2a;
 }
 
 .hotel-item:hover {
-  border-color: #667eea;
-  background: #f7fafc;
+  border-color: #ffffff;
+  background: #333;
 }
 
 .hotel-rank {
   font-size: 18px;
   font-weight: 700;
-  color: #667eea;
+  color: #ffffff;
   min-width: 32px;
 }
 
@@ -297,13 +356,13 @@
 
 .hotel-name {
   font-weight: 600;
-  color: #2d3748;
+  color: #ffffff;
   margin-bottom: 4px;
 }
 
 .hotel-location {
   font-size: 12px;
-  color: #718096;
+  color: #a0a0a0;
 }
 
 .hotel-stats {
@@ -317,11 +376,11 @@
 }
 
 .booking-count {
-  color: #3182ce;
+  color: #60a5fa;
 }
 
 .revenue-amount {
-  color: #38a169;
+  color: #4ade80;
 }
 
 @media (max-width: 768px) {

@@ -1,0 +1,517 @@
+.room-management {
+  padding: 24px;
+  background: #0f0f0f;
+  color: #ffffff;
+  min-height: 100vh;
+}
+
+.management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.management-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.add-button {
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-button:hover {
+  background: #e0e0e0;
+  transform: translateY(-1px);
+}
+
+.filters-bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.search-input,
+.hotel-select {
+  padding: 12px 16px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 16px;
+}
+
+.search-input::placeholder {
+  color: #666;
+}
+
+.search-input:focus,
+.hotel-select:focus {
+  outline: none;
+  border-color: #ffffff;
+}
+
+.hotel-select {
+  min-width: 200px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  gap: 16px;
+}
+
+.loading-spinner {
+  font-size: 48px;
+  animation: spin 1s linear infinite;
+}
+
+.error-message {
+  background: #2a1a1a;
+  color: #ff6b6b;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #ff4444;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-error {
+  background: none;
+  border: none;
+  color: #ff6b6b;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.room-form-modal {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #333;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 24px;
+  padding: 0;
+}
+
+.room-form {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 12px 16px;
+  background: #2a2a2a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #ffffff;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #666;
+}
+
+.amenities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.amenity-item {
+  background: #2a2a2a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.remove-amenity {
+  background: none;
+  border: none;
+  color: #ff6b6b;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0;
+}
+
+.add-amenity {
+  background: #333;
+  border: 1px solid #555;
+  color: #ffffff;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.images-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.image-item {
+  position: relative;
+  width: 100px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #333;
+}
+
+.image-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-image {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: #ff6b6b;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.add-image {
+  background: #333;
+  border: 1px solid #555;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid #333;
+}
+
+.cancel-button {
+  background: #333;
+  color: #ffffff;
+  border: 1px solid #555;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.save-button {
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.save-button:disabled {
+  background: #666;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.room-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.room-card:hover {
+  border-color: #555;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.room-image {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+
+.room-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.no-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #2a2a2a;
+  font-size: 48px;
+  color: #666;
+}
+
+.availability-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.availability-badge.available {
+  background: #1a2a1a;
+  color: #4ade80;
+  border: 1px solid #4ade80;
+}
+
+.availability-badge.booked {
+  background: #2a1a1a;
+  color: #ff6b6b;
+  border: 1px solid #ff4444;
+}
+
+.room-content {
+  padding: 16px;
+}
+
+.room-content h3 {
+  margin: 0 0 8px 0;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.room-type,
+.room-hotel,
+.room-price,
+.room-occupancy,
+.room-size {
+  margin: 4px 0;
+  color: #a0a0a0;
+  font-size: 14px;
+}
+
+.room-price {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.room-amenities {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.amenity-tag {
+  background: #2a2a2a;
+  color: #a0a0a0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  border: 1px solid #333;
+}
+
+.room-actions {
+  padding: 16px;
+  border-top: 1px solid #333;
+  display: flex;
+  gap: 12px;
+}
+
+.edit-button {
+  background: #333;
+  color: #ffffff;
+  border: 1px solid #555;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.edit-button:hover {
+  background: #555;
+}
+
+.delete-button {
+  background: #2a1a1a;
+  color: #ff6b6b;
+  border: 1px solid #ff4444;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.delete-button:hover {
+  background: #3a1a1a;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: #a0a0a0;
+}
+
+.empty-state h3 {
+  margin: 0 0 8px 0;
+  color: #ffffff;
+  font-size: 20px;
+}
+
+.empty-state p {
+  margin: 0 0 24px 0;
+  font-size: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .management-header {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  
+  .filters-bar {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .rooms-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .room-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+}
