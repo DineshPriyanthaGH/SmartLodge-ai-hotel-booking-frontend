@@ -1,7 +1,7 @@
 // API Configuration
 const API_CONFIG = {
-  // Use environment variable with fallback
-  BASE_URL: import.meta.env.VITE_API_URL || 'https://ai-hotel-booking-backend.vercel.app',
+  // Use environment variable with fallback to the actual working backend URL
+  BASE_URL: import.meta.env.VITE_API_URL || 'https://smart-lodge-ai-hotel-booking-backen-dusky.vercel.app',
   
   // Admin endpoints
   ADMIN: {
