@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { adminApi } from '../config/api';
 import './AdminLogin.css';
 
 const AdminLogin = ({ onLogin }) => {
@@ -15,7 +16,7 @@ const AdminLogin = ({ onLogin }) => {
     setError('');
 
     try {
-      const response = await fetch('https://smart-lodge-ai-hotel-booking-backen-dusky.vercel.app/admin/login', {
+      const response = await fetch(adminApi.login(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

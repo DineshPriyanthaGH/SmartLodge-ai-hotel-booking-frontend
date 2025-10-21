@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import HotelManagement from './HotelManagement';
 import RoomManagement from './RoomManagement';
 import BookingManagement from './BookingManagement';
+import LoadingSpinner from './components/LoadingSpinner';
 import { adminApi } from '../config/api';
 import './AdminDashboard.css';
 
@@ -63,12 +64,7 @@ const AdminDashboard = ({ token, onLogout }) => {
 
   const renderDashboard = () => {
     if (loading) {
-      return (
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading dashboard...</p>
-        </div>
-      );
+      return <LoadingSpinner message="Loading dashboard..." />;
     }
 
     if (error) {

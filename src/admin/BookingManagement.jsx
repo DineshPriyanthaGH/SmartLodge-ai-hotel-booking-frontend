@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import LoadingSpinner from './components/LoadingSpinner';
 import { adminApi } from '../config/api';
 import './BookingManagement.css';
 
@@ -248,10 +249,7 @@ const BookingManagement = () => {
   if (loading && bookings.length === 0) {
     return (
       <div className="booking-management">
-        <div className="loading-container">
-          <div className="loading-spinner">📅</div>
-          <p>Loading bookings...</p>
-        </div>
+        <LoadingSpinner message="Loading bookings..." />
       </div>
     );
   }
