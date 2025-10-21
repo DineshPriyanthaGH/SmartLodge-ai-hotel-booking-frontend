@@ -4,6 +4,7 @@ import RoomManagement from './RoomManagement';
 import BookingManagement from './BookingManagement';
 import LoadingSpinner from './components/LoadingSpinner';
 import { adminApi } from '../config/api';
+import { cleanAdminApi } from '../config/api-clean';
 import './AdminDashboard.css';
 
 const AdminDashboard = ({ token, onLogout }) => {
@@ -21,7 +22,8 @@ const AdminDashboard = ({ token, onLogout }) => {
   const fetchDashboardStats = async () => {
     try {
       setLoading(true);
-      const response = await fetch(adminApi.dashboard(), {
+      console.error('🟢 TESTING CLEAN API - Dashboard URL:', cleanAdminApi.dashboard());
+      const response = await fetch(cleanAdminApi.dashboard(), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
