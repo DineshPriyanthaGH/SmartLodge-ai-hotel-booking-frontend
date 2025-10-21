@@ -13,12 +13,23 @@ const API_CONFIG = {
   }
 };
 
+// Debug logging to track what URL is being used
+console.log('🔧 API Config Debug:', {
+  ENV_VITE_API_URL: import.meta.env.VITE_API_URL,
+  ACTUAL_BASE_URL: API_CONFIG.BASE_URL,
+  MODE: import.meta.env.MODE,
+  DEV: import.meta.env.DEV,
+  PROD: import.meta.env.PROD
+});
+
 // Helper function to get full API URL
 export const getApiUrl = (endpoint) => {
   // Remove leading slash if present to avoid double slashes
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
   
-  return `${API_CONFIG.BASE_URL}/${cleanEndpoint}`;
+  const fullUrl = `${API_CONFIG.BASE_URL}/${cleanEndpoint}`;
+  console.log(`🌐 API URL Generated: ${endpoint} → ${fullUrl}`);
+  return fullUrl;
 };
 
 // Admin API helper functions
