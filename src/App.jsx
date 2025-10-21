@@ -17,37 +17,48 @@ import UserProfilePage from './components/UserProfilePage';
 import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import EmailVerification from './components/EmailVerification';
+import AdminPanel from './admin/AdminPanel';
 
 function App() {
   return (
     <>
-      <Navigation />
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/hotel/:id" element={<HotelDetail />} />
-        <Route path="/checkout/:id" element={<Checkout />} />
-        <Route path="/booking-success" element={<BookingSuccess />} />
-        <Route path="/sign-in" element={<SignInPage />} />
-        <Route path="/sign-up" element={<SignUpPage />} />
-        <Route path="/verify-email" element={<EmailVerification />} />
-        <Route 
-          path="/user-profile" 
-          element={
-            <ProtectedRoute>
-              <UserProfilePage />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/dashboard" 
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          } 
-        />
+        {/* Admin Panel Route - Hidden and accessible only via direct URL */}
+        <Route path="/admin-secret-panel-2024" element={<AdminPanel />} />
+        
+        {/* Public Routes with Navigation and Footer */}
+        <Route path="/*" element={
+          <>
+            <Navigation />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/hotel/:id" element={<HotelDetail />} />
+              <Route path="/checkout/:id" element={<Checkout />} />
+              <Route path="/booking-success" element={<BookingSuccess />} />
+              <Route path="/sign-in" element={<SignInPage />} />
+              <Route path="/sign-up" element={<SignUpPage />} />
+              <Route path="/verify-email" element={<EmailVerification />} />
+              <Route 
+                path="/user-profile" 
+                element={
+                  <ProtectedRoute>
+                    <UserProfilePage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/dashboard" 
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } 
+              />
+            </Routes>
+            <Footer />
+          </>
+        } />
       </Routes>
-      <Footer />
     </>
   );
 }
