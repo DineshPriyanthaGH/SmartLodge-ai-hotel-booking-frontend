@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { adminApi } from '../config/api';
 import './HotelManagement.css';
 
 const HotelManagement = ({ token }) => {
@@ -45,7 +46,11 @@ const HotelManagement = ({ token }) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://smart-lodge-ai-hotel-booking-backen-dusky.vercel.app/admin/hotels?page=${currentPage}&limit=10&search=${searchTerm}`,
+        adminApi.hotelsWithQuery({ 
+          page: currentPage, 
+          limit: 10, 
+          search: searchTerm 
+        }),
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -73,8 +78,8 @@ const HotelManagement = ({ token }) => {
 
     try {
       const url = editingHotel 
-        ? `https://smart-lodge-ai-hotel-booking-backen-dusky.vercel.app/admin/hotels/${editingHotel._id}`
-        : 'https://smart-lodge-ai-hotel-booking-backen-dusky.vercel.app/admin/hotels';
+        ? adminApi.hotels(editingHotel._id)
+        : adminApi.hotels();
       
       const method = editingHotel ? 'PUT' : 'POST';
 
@@ -109,7 +114,7 @@ const HotelManagement = ({ token }) => {
 
     try {
       const response = await fetch(
-        `https://smart-lodge-ai-hotel-booking-backen-dusky.vercel.app/admin/hotels/${hotelId}`,
+        adminApi.hotels(hotelId),
         {
           method: 'DELETE',
           headers: {

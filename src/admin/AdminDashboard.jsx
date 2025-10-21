@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import HotelManagement from './HotelManagement';
 import RoomManagement from './RoomManagement';
 import BookingManagement from './BookingManagement';
+import { adminApi } from '../config/api';
 import './AdminDashboard.css';
 
 const AdminDashboard = ({ token, onLogout }) => {
@@ -19,7 +20,7 @@ const AdminDashboard = ({ token, onLogout }) => {
   const fetchDashboardStats = async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://ai-hotel-booking-backend.vercel.app/api/admin/dashboard', {
+      const response = await fetch(adminApi.dashboard(), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -50,11 +51,11 @@ const AdminDashboard = ({ token, onLogout }) => {
   const renderActiveSection = () => {
     switch (activeSection) {
       case 'hotels':
-        return <HotelManagement />;
+        return <HotelManagement token={token} />;
       case 'rooms':
-        return <RoomManagement />;
+        return <RoomManagement token={token} />;
       case 'bookings':
-        return <BookingManagement />;
+        return <BookingManagement token={token} />;
       default:
         return renderDashboard();
     }

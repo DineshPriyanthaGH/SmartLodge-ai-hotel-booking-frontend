@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { adminApi } from '../config/api';
 import './BookingManagement.css';
 
 const BookingManagement = () => {
@@ -39,7 +40,7 @@ const BookingManagement = () => {
   const fetchBookings = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('https://ai-hotel-booking-backend.vercel.app/api/admin/bookings', {
+      const response = await fetch(adminApi.bookings(), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -61,7 +62,7 @@ const BookingManagement = () => {
   const fetchHotels = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('https://ai-hotel-booking-backend.vercel.app/api/admin/hotels', {
+      const response = await fetch(adminApi.hotels(), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -79,7 +80,7 @@ const BookingManagement = () => {
   const fetchRooms = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('https://ai-hotel-booking-backend.vercel.app/api/admin/rooms', {
+      const response = await fetch(adminApi.rooms(), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -106,8 +107,8 @@ const BookingManagement = () => {
       };
 
       const url = editingBooking 
-        ? `https://ai-hotel-booking-backend.vercel.app/api/admin/bookings/${editingBooking.id}`
-        : 'https://ai-hotel-booking-backend.vercel.app/api/admin/bookings';
+        ? adminApi.bookings(editingBooking.id)
+        : adminApi.bookings();
       
       const method = editingBooking ? 'PUT' : 'POST';
 
@@ -144,7 +145,7 @@ const BookingManagement = () => {
       setLoading(true);
       const token = localStorage.getItem('adminToken');
       
-      const response = await fetch(`https://ai-hotel-booking-backend.vercel.app/api/admin/bookings/${bookingId}`, {
+      const response = await fetch(adminApi.bookings(bookingId), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

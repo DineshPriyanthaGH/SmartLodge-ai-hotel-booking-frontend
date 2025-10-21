@@ -1,0 +1,50 @@
+// API Configuration
+const API_CONFIG = {
+  // Use environment variable with fallback
+  BASE_URL: import.meta.env.VITE_API_URL || 'https://ai-hotel-booking-backend.vercel.app',
+  
+  // Admin endpoints
+  ADMIN: {
+    LOGIN: '/admin/login',
+    DASHBOARD: '/admin/dashboard',
+    HOTELS: '/admin/hotels',
+    ROOMS: '/admin/rooms',
+    BOOKINGS: '/admin/bookings'
+  }
+};
+
+// Helper function to get full API URL
+export const getApiUrl = (endpoint) => {
+  // Remove leading slash if present to avoid double slashes
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
+  
+  return `${API_CONFIG.BASE_URL}/${cleanEndpoint}`;
+};
+
+// Admin API helper functions
+export const adminApi = {
+  // Get full URL for admin endpoints
+  login: () => getApiUrl(API_CONFIG.ADMIN.LOGIN),
+  dashboard: () => getApiUrl(API_CONFIG.ADMIN.DASHBOARD),
+  hotels: (id = '') => getApiUrl(`${API_CONFIG.ADMIN.HOTELS}${id ? `/${id}` : ''}`),
+  rooms: (id = '') => getApiUrl(`${API_CONFIG.ADMIN.ROOMS}${id ? `/${id}` : ''}`),
+  bookings: (id = '') => getApiUrl(`${API_CONFIG.ADMIN.BOOKINGS}${id ? `/${id}` : ''}`),
+  
+  // Helper for query parameters
+  hotelsWithQuery: (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    return `${adminApi.hotels()}${queryString ? `?${queryString}` : ''}`;
+  },
+  
+  roomsWithQuery: (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    return `${adminApi.rooms()}${queryString ? `?${queryString}` : ''}`;
+  },
+  
+  bookingsWithQuery: (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    return `${adminApi.bookings()}${queryString ? `?${queryString}` : ''}`;
+  }
+};
+
+export default API_CONFIG;

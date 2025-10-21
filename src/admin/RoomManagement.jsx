@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { adminApi } from '../config/api';
 import './RoomManagement.css';
 
 const RoomManagement = () => {
@@ -71,7 +72,7 @@ const RoomManagement = () => {
   const fetchRooms = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('https://ai-hotel-booking-backend.vercel.app/api/admin/rooms', {
+      const response = await fetch(adminApi.rooms(), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -93,7 +94,7 @@ const RoomManagement = () => {
   const fetchHotels = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('https://ai-hotel-booking-backend.vercel.app/api/admin/hotels', {
+      const response = await fetch(adminApi.hotels(), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -121,8 +122,8 @@ const RoomManagement = () => {
       };
 
       const url = editingRoom 
-        ? `https://ai-hotel-booking-backend.vercel.app/api/admin/rooms/${editingRoom.id}`
-        : 'https://ai-hotel-booking-backend.vercel.app/api/admin/rooms';
+        ? adminApi.rooms(editingRoom.id)
+        : adminApi.rooms();
       
       const method = editingRoom ? 'PUT' : 'POST';
 
@@ -159,7 +160,7 @@ const RoomManagement = () => {
       setLoading(true);
       const token = localStorage.getItem('adminToken');
       
-      const response = await fetch(`https://ai-hotel-booking-backend.vercel.app/api/admin/rooms/${roomId}`, {
+      const response = await fetch(adminApi.rooms(roomId), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
