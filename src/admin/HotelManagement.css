@@ -1,7 +1,7 @@
 .hotel-management {
   padding: 24px;
-  background: #0f0f0f;
-  color: #ffffff;
+  background: #f8fafc;
+  color: #1e293b;
   min-height: 100vh;
 }
 
@@ -14,14 +14,14 @@
 
 .management-header h2 {
   margin: 0;
-  color: #ffffff;
+  color: #1e293b;
   font-size: 24px;
   font-weight: 700;
 }
 
 .add-button {
-  background: #ffffff;
-  color: #000000;
+  background: #3b82f6;
+  color: #ffffff;
   border: none;
   padding: 12px 20px;
   border-radius: 8px;
@@ -31,7 +31,7 @@
 }
 
 .add-button:hover {
-  background: #e0e0e0;
+  background: #2563eb;
   transform: translateY(-1px);
 }
 
@@ -43,20 +43,21 @@
   width: 100%;
   max-width: 400px;
   padding: 12px 16px;
-  background: #1a1a1a;
-  border: 1px solid #333;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-  color: #ffffff;
+  color: #1e293b;
   font-size: 16px;
 }
 
 .search-input::placeholder {
-  color: #666;
+  color: #94a3b8;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .loading-container {
@@ -74,11 +75,11 @@
 }
 
 .error-message {
-  background: #2a1a1a;
-  color: #ff6b6b;
+  background: #fef2f2;
+  color: #dc2626;
   padding: 12px 16px;
   border-radius: 8px;
-  border: 1px solid #ff4444;
+  border: 1px solid #fecaca;
   margin-bottom: 16px;
   display: flex;
   justify-content: space-between;
@@ -88,7 +89,7 @@
 .close-error {
   background: none;
   border: none;
-  color: #ff6b6b;
+  color: #dc2626;
   cursor: pointer;
   font-size: 18px;
   padding: 0;
@@ -100,7 +101,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,13 +110,14 @@
 }
 
 .hotel-form-modal {
-  background: #1a1a1a;
-  border: 1px solid #333;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
   width: 100%;
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 .modal-header {
@@ -123,12 +125,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .modal-header h3 {
   margin: 0;
-  color: #ffffff;
+  color: #1e293b;
   font-size: 20px;
   font-weight: 700;
 }
@@ -136,10 +138,14 @@
 .close-modal {
   background: none;
   border: none;
-  color: #ffffff;
+  color: #64748b;
   cursor: pointer;
   font-size: 24px;
   padding: 0;
+}
+
+.close-modal:hover {
+  color: #1e293b;
 }
 
 .hotel-form {
@@ -162,7 +168,7 @@
 }
 
 .form-group label {
-  color: #ffffff;
+  color: #374151;
   font-weight: 600;
   font-size: 14px;
 }
@@ -171,10 +177,10 @@
 .form-group textarea,
 .form-group select {
   padding: 12px 16px;
-  background: #2a2a2a;
-  border: 1px solid #333;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-  color: #ffffff;
+  color: #1e293b;
   font-size: 16px;
   transition: border-color 0.2s;
 }
@@ -183,12 +189,13 @@
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: #666;
+  color: #9ca3af;
 }
 
 .form-group input[type="checkbox"] {
@@ -204,33 +211,39 @@
 }
 
 .amenity-item {
-  background: #2a2a2a;
-  border: 1px solid #333;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
   border-radius: 6px;
   padding: 6px 12px;
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 14px;
+  color: #1e293b;
 }
 
 .remove-amenity {
   background: none;
   border: none;
-  color: #ff6b6b;
+  color: #dc2626;
   cursor: pointer;
   font-size: 12px;
   padding: 0;
 }
 
 .add-amenity {
-  background: #333;
-  border: 1px solid #555;
-  color: #ffffff;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #374151;
   border-radius: 6px;
   padding: 6px 12px;
   cursor: pointer;
   font-size: 14px;
+}
+
+.add-amenity:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
 }
 
 .form-actions {
@@ -242,18 +255,22 @@
 }
 
 .cancel-button {
-  background: #333;
-  color: #ffffff;
-  border: 1px solid #555;
+  background: #f8fafc;
+  color: #374151;
+  border: 1px solid #e2e8f0;
   padding: 12px 20px;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
 }
 
+.cancel-button:hover {
+  background: #f1f5f9;
+}
+
 .save-button {
-  background: #ffffff;
-  color: #000000;
+  background: #3b82f6;
+  color: #ffffff;
   border: none;
   padding: 12px 20px;
   border-radius: 8px;
@@ -261,9 +278,13 @@
   font-weight: 600;
 }
 
+.save-button:hover {
+  background: #2563eb;
+}
+
 .save-button:disabled {
-  background: #666;
-  color: #999;
+  background: #94a3b8;
+  color: #f1f5f9;
   cursor: not-allowed;
 }
 
@@ -274,17 +295,18 @@
 }
 
 .hotel-card {
-  background: #1a1a1a;
-  border: 1px solid #333;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .hotel-card:hover {
-  border-color: #555;
+  border-color: #cbd5e1;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .hotel-image {
@@ -317,7 +339,7 @@
 
 .hotel-content h3 {
   margin: 0 0 8px 0;
-  color: #ffffff;
+  color: #1e293b;
   font-size: 18px;
   font-weight: 700;
 }
@@ -326,7 +348,7 @@
 .hotel-price,
 .hotel-rating {
   margin: 4px 0;
-  color: #a0a0a0;
+  color: #64748b;
   font-size: 14px;
 }
 
@@ -340,28 +362,28 @@
 }
 
 .hotel-status.active {
-  background: #1a2a1a;
-  color: #4ade80;
-  border: 1px solid #4ade80;
+  background: #dcfce7;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
 }
 
 .hotel-status.inactive {
-  background: #2a2a1a;
-  color: #fbbf24;
-  border: 1px solid #fbbf24;
+  background: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fed7aa;
 }
 
 .hotel-actions {
   padding: 16px 20px;
-  border-top: 1px solid #333;
+  border-top: 1px solid #e2e8f0;
   display: flex;
   gap: 12px;
 }
 
 .edit-button {
-  background: #333;
-  color: #ffffff;
-  border: 1px solid #555;
+  background: #f8fafc;
+  color: #374151;
+  border: 1px solid #e2e8f0;
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
@@ -371,13 +393,14 @@
 }
 
 .edit-button:hover {
-  background: #555;
+  background: #f1f5f9;
+  border-color: #cbd5e1;
 }
 
 .delete-button {
-  background: #2a1a1a;
-  color: #ff6b6b;
-  border: 1px solid #ff4444;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
@@ -387,7 +410,8 @@
 }
 
 .delete-button:hover {
-  background: #3a1a1a;
+  background: #fee2e2;
+  border-color: #f87171;
 }
 
 .empty-state {

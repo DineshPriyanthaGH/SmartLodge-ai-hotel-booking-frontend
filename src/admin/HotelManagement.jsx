@@ -216,7 +216,7 @@ const HotelManagement = ({ token }) => {
     return (
       <div className="hotel-management">
         <div className="loading-container">
-          <div className="loading-spinner">🔄</div>
+          <div className="loading-spinner"></div>
           <p>Loading hotels...</p>
         </div>
       </div>
@@ -226,7 +226,7 @@ const HotelManagement = ({ token }) => {
   return (
     <div className="hotel-management">
       <div className="management-header">
-        <h2>🏨 Hotel Management</h2>
+        <h2>Hotel Management</h2>
         <button 
           className="add-button"
           onClick={() => {

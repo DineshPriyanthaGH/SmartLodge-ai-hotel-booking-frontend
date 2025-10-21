@@ -64,7 +64,7 @@ const AdminDashboard = ({ token, onLogout }) => {
     if (loading) {
       return (
         <div className="loading-container">
-          <div className="loading-spinner">🔄</div>
+          <div className="loading-spinner"></div>
           <p>Loading dashboard...</p>
         </div>
       );
@@ -74,10 +74,10 @@ const AdminDashboard = ({ token, onLogout }) => {
       return (
         <div className="error-container">
           <div className="error-message">
-            ⚠️ {error}
+            {error}
           </div>
           <button onClick={fetchDashboardStats} className="retry-button">
-            � Retry
+            Retry
           </button>
         </div>
       );
@@ -87,49 +87,49 @@ const AdminDashboard = ({ token, onLogout }) => {
       <main className="admin-main">
         <div className="stats-grid">
           <div className="stat-card hotels">
-            <div className="stat-icon">🏨</div>
+            <div className="stat-icon">HTL</div>
             <div className="stat-content">
               <h3>Hotels</h3>
               <div className="stat-number">{stats?.hotels || 0}</div>
               <div className="stat-details">
-                <span className="stat-detail good">✅ Active</span>
-                <span className="stat-detail neutral">⏸️ Manage</span>
+                <span className="stat-detail good">Active Properties</span>
+                <span className="stat-detail neutral">Manage Hotels</span>
               </div>
             </div>
           </div>
 
           <div className="stat-card rooms">
-            <div className="stat-icon">🛏️</div>
+            <div className="stat-icon">RM</div>
             <div className="stat-content">
               <h3>Rooms</h3>
               <div className="stat-number">{stats?.rooms || 0}</div>
               <div className="stat-details">
-                <span className="stat-detail good">✅ Available</span>
-                <span className="stat-detail warning">🔒 Booked</span>
+                <span className="stat-detail good">Available Rooms</span>
+                <span className="stat-detail warning">Booked Rooms</span>
               </div>
             </div>
           </div>
 
           <div className="stat-card bookings">
-            <div className="stat-icon">📅</div>
+            <div className="stat-icon">BK</div>
             <div className="stat-content">
               <h3>Bookings</h3>
               <div className="stat-number">{stats?.bookings || 0}</div>
               <div className="stat-details">
-                <span className="stat-detail good">✅ Confirmed</span>
-                <span className="stat-detail info">🆕 Recent</span>
+                <span className="stat-detail good">Confirmed</span>
+                <span className="stat-detail info">Recent</span>
               </div>
             </div>
           </div>
 
           <div className="stat-card revenue">
-            <div className="stat-icon">💰</div>
+            <div className="stat-icon">$</div>
             <div className="stat-content">
               <h3>Revenue</h3>
               <div className="stat-number">${stats?.revenue?.toLocaleString() || '0'}</div>
               <div className="stat-details">
-                <span className="stat-detail good">✅ Total</span>
-                <span className="stat-detail warning">⏳ Monthly</span>
+                <span className="stat-detail good">Total Revenue</span>
+                <span className="stat-detail warning">Monthly Target</span>
               </div>
             </div>
           </div>
@@ -137,7 +137,7 @@ const AdminDashboard = ({ token, onLogout }) => {
 
         <div className="charts-section">
           <div className="chart-card">
-            <h3>📈 System Overview</h3>
+            <h3>System Overview</h3>
             <div className="overview-stats">
               <div className="overview-item">
                 <span className="overview-label">Total Hotels:</span>
@@ -159,25 +159,25 @@ const AdminDashboard = ({ token, onLogout }) => {
           </div>
 
           <div className="chart-card">
-            <h3>🚀 Quick Actions</h3>
+            <h3>Quick Actions</h3>
             <div className="quick-actions">
               <button 
                 className="quick-action-btn"
                 onClick={() => setActiveSection('hotels')}
               >
-                🏨 Manage Hotels
+                Manage Hotels
               </button>
               <button 
                 className="quick-action-btn"
                 onClick={() => setActiveSection('rooms')}
               >
-                🛏️ Manage Rooms
+                Manage Rooms
               </button>
               <button 
                 className="quick-action-btn"
                 onClick={() => setActiveSection('bookings')}
               >
-                📅 Manage Bookings
+                Manage Bookings
               </button>
             </div>
           </div>
@@ -190,7 +190,7 @@ const AdminDashboard = ({ token, onLogout }) => {
     <div className="admin-dashboard">
       <header className="admin-header">
         <div className="header-left">
-          <h1>🏨 SmartLodge Admin</h1>
+          <h1>SmartLodge Admin</h1>
           <span className="admin-badge">Administrator</span>
         </div>
         <div className="header-right">
@@ -198,7 +198,7 @@ const AdminDashboard = ({ token, onLogout }) => {
             Last updated: {new Date().toLocaleString()}
           </span>
           <button onClick={handleLogout} className="logout-button">
-            🚪 Logout
+            Logout
           </button>
         </div>
       </header>
@@ -208,25 +208,25 @@ const AdminDashboard = ({ token, onLogout }) => {
           className={`nav-item ${activeSection === 'dashboard' ? 'active' : ''}`}
           onClick={() => setActiveSection('dashboard')}
         >
-          📊 Dashboard
+          Dashboard
         </button>
         <button 
           className={`nav-item ${activeSection === 'hotels' ? 'active' : ''}`}
           onClick={() => setActiveSection('hotels')}
         >
-          🏨 Hotels
+          Hotels
         </button>
         <button 
           className={`nav-item ${activeSection === 'rooms' ? 'active' : ''}`}
           onClick={() => setActiveSection('rooms')}
         >
-          🛏️ Rooms
+          Rooms
         </button>
         <button 
           className={`nav-item ${activeSection === 'bookings' ? 'active' : ''}`}
           onClick={() => setActiveSection('bookings')}
         >
-          📅 Bookings
+          Bookings
         </button>
       </nav>
 

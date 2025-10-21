@@ -279,7 +279,7 @@ const RoomManagement = () => {
   return (
     <div className="room-management">
       <div className="management-header">
-        <h2>🛏️ Room Management</h2>
+        <h2>Room Management</h2>
         <button className="add-button" onClick={openAddModal}>
           + Add New Room
         </button>

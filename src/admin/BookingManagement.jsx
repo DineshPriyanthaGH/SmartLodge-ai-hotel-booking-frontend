@@ -258,7 +258,7 @@ const BookingManagement = () => {
   return (
     <div className="booking-management">
       <div className="management-header">
-        <h2>📅 Booking Management</h2>
+        <h2>Booking Management</h2>
         <button className="add-button" onClick={openAddModal}>
           + Add New Booking
         </button>
