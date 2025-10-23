@@ -40,21 +40,34 @@ const BookingManagement = ({ token }) => {
 
   const fetchBookings = async () => {
     try {
-      const token = localStorage.getItem('adminToken');
+      console.log('📅 Fetching bookings with token:', !!token);
       const response = await fetch(adminApi.bookings(), {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       });
 
+      console.log('📅 Bookings response status:', response.status);
+
       if (!response.ok) {
-        throw new Error('Failed to fetch bookings');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch bookings');
       }
 
       const data = await response.json();
-      setBookings(data);
+      console.log('📅 Bookings data:', data);
+      
+      if (data.success && data.data) {
+        setBookings(data.data.bookings || []);
+      } else {
+        setBookings([]);
+        setError(data.message || 'No bookings found');
+      }
     } catch (err) {
+      console.error('🚨 Booking fetch error:', err);
       setError('Failed to load bookings: ' + err.message);
+      setBookings([]);
     } finally {
       setLoading(false);
     }
@@ -62,37 +75,61 @@ const BookingManagement = ({ token }) => {
 
   const fetchHotels = async () => {
     try {
-      const token = localStorage.getItem('adminToken');
+      console.log('🏨 Fetching hotels for booking management...');
       const response = await fetch(adminApi.hotels(), {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       });
 
       if (response.ok) {
         const data = await response.json();
-        setHotels(data);
+        console.log('🏨 Hotels data for bookings:', data);
+        
+        if (data.success && data.data) {
+          setHotels(data.data.hotels || []);
+        } else {
+          setHotels([]);
+        }
+      } else {
+        const errorData = await response.json();
+        console.error('🚨 Hotel fetch failed for bookings:', errorData);
+        setError('Failed to load hotels');
       }
     } catch (err) {
-      console.error('Failed to fetch hotels:', err);
+      console.error('🚨 Hotel fetch error for bookings:', err);
+      setError('Failed to load hotels: ' + err.message);
     }
   };
 
   const fetchRooms = async () => {
     try {
-      const token = localStorage.getItem('adminToken');
+      console.log('🛏️ Fetching rooms for booking management...');
       const response = await fetch(adminApi.rooms(), {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       });
 
       if (response.ok) {
         const data = await response.json();
-        setRooms(data);
+        console.log('🛏️ Rooms data for bookings:', data);
+        
+        if (data.success && data.data) {
+          setRooms(data.data.rooms || []);
+        } else {
+          setRooms([]);
+        }
+      } else {
+        const errorData = await response.json();
+        console.error('🚨 Room fetch failed for bookings:', errorData);
+        setError('Failed to load rooms');
       }
     } catch (err) {
-      console.error('Failed to fetch rooms:', err);
+      console.error('🚨 Room fetch error for bookings:', err);
+      setError('Failed to load rooms: ' + err.message);
     }
   };
 

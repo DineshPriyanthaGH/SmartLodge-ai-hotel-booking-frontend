@@ -90,8 +90,8 @@ const RoomManagement = ({ token }) => {
       const data = await response.json();
       console.log('🛏️ Rooms data:', data);
       
-      if (data.success) {
-        setRooms(data.data || []);
+      if (data.success && data.data) {
+        setRooms(data.data.rooms || []);
       } else {
         setRooms([]);
         setError(data.message || 'No rooms found');
@@ -119,8 +119,8 @@ const RoomManagement = ({ token }) => {
         const data = await response.json();
         console.log('🏨 Hotels data for rooms:', data);
         
-        if (data.success) {
-          setHotels(data.data?.hotels || []);
+        if (data.success && data.data) {
+          setHotels(data.data.hotels || []);
         } else {
           setHotels([]);
         }
