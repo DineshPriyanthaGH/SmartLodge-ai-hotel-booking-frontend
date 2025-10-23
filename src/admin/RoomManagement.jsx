@@ -277,13 +277,13 @@ const RoomManagement = ({ token }) => {
   };
 
   const getHotelName = (hotelId) => {
-    const hotel = hotels.find(h => h.id === hotelId);
+    const hotel = hotels.find(h => h._id === hotelId || h.id === hotelId);
     return hotel ? hotel.name : 'Unknown Hotel';
   };
 
   const filteredRooms = rooms.filter(room => {
-    const matchesSearch = room.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         room.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = (room.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (room.type || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                          getHotelName(room.hotelId).toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesHotel = !selectedHotel || room.hotelId === selectedHotel;

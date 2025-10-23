@@ -246,12 +246,12 @@ const BookingManagement = ({ token }) => {
   };
 
   const getHotelName = (hotelId) => {
-    const hotel = hotels.find(h => h.id === hotelId);
+    const hotel = hotels.find(h => h._id === hotelId || h.id === hotelId);
     return hotel ? hotel.name : 'Unknown Hotel';
   };
 
   const getRoomName = (roomId) => {
-    const room = rooms.find(r => r.id === roomId);
+    const room = rooms.find(r => r._id === roomId || r.id === roomId);
     return room ? room.name : 'Unknown Room';
   };
 
@@ -273,8 +273,8 @@ const BookingManagement = ({ token }) => {
   };
 
   const filteredBookings = bookings.filter(booking => {
-    const matchesSearch = booking.guestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         booking.guestEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = (booking.guestName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (booking.guestEmail || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                          getHotelName(booking.hotelId).toLowerCase().includes(searchTerm.toLowerCase()) ||
                          getRoomName(booking.roomId).toLowerCase().includes(searchTerm.toLowerCase());
     
