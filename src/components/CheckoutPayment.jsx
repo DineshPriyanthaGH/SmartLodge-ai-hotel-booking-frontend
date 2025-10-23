@@ -91,10 +91,15 @@ function CheckoutPayment({ hotel, bookingData, onComplete, onBack }) {
           checkOut: bookingData.checkOut,
           nights: bookingData.nights
         },
-        guests: {
-          adults: bookingData.guests,
-          children: 0
-        },
+        guests: typeof bookingData.guests === 'object' 
+          ? {
+              adults: bookingData.guests.adults || 1,
+              children: bookingData.guests.children || 0
+            }
+          : {
+              adults: bookingData.guests,
+              children: 0
+            },
         rooms: bookingData.rooms,
         guestDetails: {
           firstName: bookingData.firstName,

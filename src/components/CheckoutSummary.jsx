@@ -221,7 +221,7 @@ function CheckoutSummary({ hotel, bookingData, setBookingData, onComplete, onBac
                   <Users className="w-5 h-5 mr-3 text-blue-600" />
                   <div>
                     <p className="font-medium">Guests</p>
-                    <p className="text-sm text-gray-600">{bookingData.guests} {bookingData.guests === 1 ? 'guest' : 'guests'}</p>
+                    <p className="text-sm text-gray-600">{typeof bookingData.guests === 'object' ? `${(bookingData.guests.adults || 0) + (bookingData.guests.children || 0)} guests` : `${bookingData.guests} ${bookingData.guests === 1 ? 'guest' : 'guests'}`}</p>
                   </div>
                 </div>
                 <div className="flex items-center">
@@ -330,7 +330,7 @@ function CheckoutSummary({ hotel, bookingData, setBookingData, onComplete, onBac
               <h5 className="font-semibold mb-2">Your Stay</h5>
               <div className="text-sm text-gray-600 space-y-1">
                 <p>{formatDate(bookingData.checkIn)} - {formatDate(bookingData.checkOut)}</p>
-                <p>{bookingData.nights} night{bookingData.nights !== 1 ? 's' : ''} • {bookingData.guests} guest{bookingData.guests !== 1 ? 's' : ''} • {bookingData.rooms} room{bookingData.rooms !== 1 ? 's' : ''}</p>
+                <p>{bookingData.nights} night{bookingData.nights !== 1 ? 's' : ''} • {typeof bookingData.guests === 'object' ? (bookingData.guests.adults || 0) + (bookingData.guests.children || 0) : bookingData.guests} guest{(typeof bookingData.guests === 'object' ? (bookingData.guests.adults || 0) + (bookingData.guests.children || 0) : bookingData.guests) !== 1 ? 's' : ''} • {bookingData.rooms} room{bookingData.rooms !== 1 ? 's' : ''}</p>
               </div>
             </div>
 

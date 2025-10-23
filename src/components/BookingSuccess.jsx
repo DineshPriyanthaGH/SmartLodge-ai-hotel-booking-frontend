@@ -154,7 +154,7 @@ function BookingSuccess() {
                   <div className="flex items-center">
                     <Users className="w-6 h-6 text-blue-600 mr-3" />
                     <div>
-                      <p className="font-medium">{bookingData.guests} Guest{bookingData.guests !== 1 ? 's' : ''}</p>
+                      <p className="font-medium">{typeof bookingData.guests === 'object' ? (bookingData.guests.adults || 0) + (bookingData.guests.children || 0) : bookingData.guests} Guest{(typeof bookingData.guests === 'object' ? (bookingData.guests.adults || 0) + (bookingData.guests.children || 0) : bookingData.guests) !== 1 ? 's' : ''}</p>
                       <p className="text-gray-600">{bookingData.firstName} {bookingData.lastName}</p>
                     </div>
                   </div>

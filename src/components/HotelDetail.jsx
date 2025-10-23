@@ -103,7 +103,11 @@ function HotelDetailContent() {
 
   // Availability checking function
   const checkAvailability = async () => {
-    if (!bookingData.checkIn || !bookingData.checkOut || !bookingData.guests || !bookingData.rooms) {
+    const totalGuests = typeof bookingData.guests === 'object' 
+      ? (bookingData.guests.adults || 0) + (bookingData.guests.children || 0) 
+      : bookingData.guests;
+    
+    if (!bookingData.checkIn || !bookingData.checkOut || !totalGuests || !bookingData.rooms) {
       return;
     }
 
@@ -164,7 +168,11 @@ function HotelDetailContent() {
   // Auto-check availability when dates/rooms/guests change
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (bookingData.checkIn && bookingData.checkOut && bookingData.guests && bookingData.rooms) {
+      const totalGuests = typeof bookingData.guests === 'object' 
+        ? (bookingData.guests.adults || 0) + (bookingData.guests.children || 0) 
+        : bookingData.guests;
+      
+      if (bookingData.checkIn && bookingData.checkOut && totalGuests && bookingData.rooms) {
         checkAvailability();
       } else {
         setAvailabilityStatus(null);
@@ -215,7 +223,9 @@ function HotelDetailContent() {
       const bookingInfo = {
         checkIn: bookingData.checkIn,
         checkOut: bookingData.checkOut,
-        guests: bookingData.guests,
+        guests: typeof bookingData.guests === 'object' 
+          ? (bookingData.guests.adults || 0) + (bookingData.guests.children || 0)
+          : bookingData.guests,
         rooms: bookingData.rooms,
         hotelId: hotel.id,
         totalPrice: totalPrice,
@@ -445,7 +455,9 @@ function HotelDetailContent() {
                     <Input
                       type="number"
                       min="1"
-                      value={bookingData.guests}
+                      value={typeof bookingData.guests === 'object' 
+                        ? (bookingData.guests.adults || 0) + (bookingData.guests.children || 0)
+                        : bookingData.guests}
                       onChange={(e) => setBookingData({...bookingData, guests: parseInt(e.target.value)})}
                       className="w-full"
                     />
@@ -695,7 +707,7 @@ function HotelDetailContent() {
                   </div>
                   <div className="flex justify-between">
                     <span>Guests:</span>
-                    <span>{bookingData.guests}</span>
+                    <span>{typeof bookingData.guests === 'object' ? (bookingData.guests.adults || 0) + (bookingData.guests.children || 0) : bookingData.guests}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Rooms:</span>
