@@ -10,22 +10,10 @@ const AdminPanel = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if admin is already logged in
-    const savedToken = localStorage.getItem('adminToken');
-    const savedAdmin = localStorage.getItem('adminUser');
-
-    if (savedToken && savedAdmin) {
-      try {
-        const adminData = JSON.parse(savedAdmin);
-        setToken(savedToken);
-        setAdmin(adminData);
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error('Error parsing saved admin data:', error);
-        localStorage.removeItem('adminToken');
-        localStorage.removeItem('adminUser');
-      }
-    }
+    // TEMPORARY: Clear any old tokens to force fresh login
+    console.log('🧹 Clearing old admin tokens for fresh login...');
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
     setLoading(false);
   }, []);
 

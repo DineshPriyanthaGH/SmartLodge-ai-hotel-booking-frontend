@@ -16,6 +16,9 @@ const AdminLogin = ({ onLogin }) => {
     setError('');
 
     try {
+      console.log('🔐 Admin login attempt:', { username: credentials.username });
+      console.log('🌐 Login URL:', adminApi.login());
+      
       const response = await fetch(adminApi.login(), {
         method: 'POST',
         headers: {
@@ -24,18 +27,22 @@ const AdminLogin = ({ onLogin }) => {
         body: JSON.stringify(credentials)
       });
 
+      console.log('📡 Login response status:', response.status);
       const data = await response.json();
+      console.log('📋 Login response data:', data);
 
       if (data.success) {
+        console.log('✅ Login successful, storing token...');
         localStorage.setItem('adminToken', data.data.token);
         localStorage.setItem('adminUser', JSON.stringify(data.data.admin));
         onLogin(data.data.token, data.data.admin);
       } else {
+        console.error('❌ Login failed:', data.message);
         setError(data.message || 'Login failed');
       }
     } catch (err) {
+      console.error('🚨 Login network error:', err);
       setError('Network error. Please try again.');
-      console.error('Login error:', err);
     } finally {
       setLoading(false);
     }
