@@ -228,16 +228,27 @@ const BookingManagement = ({ token }) => {
 
   const openEditModal = (booking) => {
     setEditingBooking(booking);
+    
+    // Handle guest data - could be object {adults: 2, children: 1} or number
+    let guestString = '';
+    if (booking.guests) {
+      if (typeof booking.guests === 'object') {
+        guestString = `${booking.guests.adults || 0}`;
+      } else {
+        guestString = booking.guests.toString();
+      }
+    }
+    
     setFormData({
-      guestName: booking.guestName,
-      guestEmail: booking.guestEmail,
-      guestPhone: booking.guestPhone || '',
-      hotelId: booking.hotelId,
-      roomId: booking.roomId,
-      checkInDate: booking.checkInDate.split('T')[0],
-      checkOutDate: booking.checkOutDate.split('T')[0],
-      guests: booking.guests.toString(),
-      totalPrice: booking.totalPrice.toString(),
+      guestName: booking.guestName || booking.guestInfo?.name || '',
+      guestEmail: booking.guestEmail || booking.guestInfo?.email || '',
+      guestPhone: booking.guestPhone || booking.guestInfo?.phone || '',
+      hotelId: booking.hotelId || '',
+      roomId: booking.roomId || '',
+      checkInDate: booking.checkInDate ? booking.checkInDate.split('T')[0] : '',
+      checkOutDate: booking.checkOutDate ? booking.checkOutDate.split('T')[0] : '',
+      guests: guestString,
+      totalPrice: (booking.totalPrice || booking.totalAmount || '').toString(),
       status: booking.status,
       paymentStatus: booking.paymentStatus,
       specialRequests: booking.specialRequests || ''

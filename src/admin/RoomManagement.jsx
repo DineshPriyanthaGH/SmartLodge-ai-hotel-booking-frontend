@@ -229,15 +229,15 @@ const RoomManagement = ({ token }) => {
   const openEditModal = (room) => {
     setEditingRoom(room);
     setFormData({
-      name: room.name,
-      type: room.type,
-      pricePerNight: room.pricePerNight.toString(),
-      maxOccupancy: room.maxOccupancy.toString(),
-      size: room.size.toString(),
+      name: room.name || '',
+      type: room.type || '',
+      pricePerNight: (room.pricePerNight || room.pricing?.basePrice || '').toString(),
+      maxOccupancy: (room.maxOccupancy || room.capacity?.adults || '').toString(),
+      size: (room.size || '').toString(),
       amenities: room.amenities || [],
       images: room.images || [],
-      availability: room.availability,
-      hotelId: room.hotelId,
+      availability: room.availability || 'available',
+      hotelId: room.hotelId || '',
       description: room.description || ''
     });
     setShowModal(true);
