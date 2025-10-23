@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // API configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+// CRITICAL FIX: Remove /api from fallback URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://smart-lodge-ai-hotel-booking-backen-dusky.vercel.app';
 
 // Create axios instance with default config
 const axiosInstance = axios.create({

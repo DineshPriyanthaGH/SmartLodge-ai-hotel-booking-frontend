@@ -22,8 +22,8 @@ const AdminDashboard = ({ token, onLogout }) => {
   const fetchDashboardStats = async () => {
     try {
       setLoading(true);
-      console.error('🟢 TESTING CLEAN API - Dashboard URL:', cleanAdminApi.dashboard());
-      const response = await fetch(cleanAdminApi.dashboard(), {
+      console.error('🟢 USING FIXED API - Dashboard URL:', adminApi.dashboard());
+      const response = await fetch(adminApi.dashboard(), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',

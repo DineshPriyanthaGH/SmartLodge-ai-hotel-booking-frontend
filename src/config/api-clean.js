@@ -1,5 +1,14 @@
 // CLEAN API Configuration - No legacy code
-const BACKEND_URL = import.meta.env.VITE_API_URL || 'https://smart-lodge-ai-hotel-booking-backen-dusky.vercel.app';
+// FORCE CORRECT URL - Remove any /api suffix from environment variable
+let backendUrl = import.meta.env.VITE_API_URL || 'https://smart-lodge-ai-hotel-booking-backen-dusky.vercel.app';
+
+// CRITICAL FIX: Remove /api suffix if present
+if (backendUrl.endsWith('/api')) {
+  backendUrl = backendUrl.slice(0, -4); // Remove last 4 characters (/api)
+  console.error('🟡 REMOVED /api SUFFIX FROM BACKEND URL');
+}
+
+const BACKEND_URL = backendUrl;
 
 console.error('🟢 CLEAN API CONFIG LOADED');
 console.error('🟢 BACKEND_URL:', BACKEND_URL);

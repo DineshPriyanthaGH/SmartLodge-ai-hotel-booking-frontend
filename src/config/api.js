@@ -1,7 +1,15 @@
 // API Configuration
+// CRITICAL FIX: Remove /api suffix if present in environment variable
+let baseUrl = import.meta.env.VITE_API_URL || 'https://smart-lodge-ai-hotel-booking-backen-dusky.vercel.app';
+
+if (baseUrl.endsWith('/api')) {
+  baseUrl = baseUrl.slice(0, -4); // Remove last 4 characters (/api)
+  console.error('🟡 REMOVED /api SUFFIX FROM BASE URL');
+}
+
 const API_CONFIG = {
-  // Use environment variable with fallback to the actual working backend URL
-  BASE_URL: import.meta.env.VITE_API_URL || 'https://smart-lodge-ai-hotel-booking-backen-dusky.vercel.app',
+  // Use corrected URL without /api suffix
+  BASE_URL: baseUrl,
   
   // Admin endpoints (note: these are direct paths without /api/ prefix)
   ADMIN: {
