@@ -3,7 +3,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 import { adminApi } from '../config/api';
 import './BookingManagement.css';
 
-const BookingManagement = () => {
+const BookingManagement = ({ token }) => {
   const [bookings, setBookings] = useState([]);
   const [hotels, setHotels] = useState([]);
   const [rooms, setRooms] = useState([]);

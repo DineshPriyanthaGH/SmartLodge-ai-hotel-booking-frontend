@@ -3,7 +3,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 import { adminApi } from '../config/api';
 import './RoomManagement.css';
 
-const RoomManagement = () => {
+const RoomManagement = ({ token }) => {
   const [rooms, setRooms] = useState([]);
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,21 +72,34 @@ const RoomManagement = () => {
 
   const fetchRooms = async () => {
     try {
-      const token = localStorage.getItem('adminToken');
+      console.log('🛏️ Fetching rooms with token:', !!token);
       const response = await fetch(adminApi.rooms(), {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       });
 
+      console.log('🛏️ Rooms response status:', response.status);
+      
       if (!response.ok) {
-        throw new Error('Failed to fetch rooms');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch rooms');
       }
 
       const data = await response.json();
-      setRooms(data);
+      console.log('🛏️ Rooms data:', data);
+      
+      if (data.success) {
+        setRooms(data.data || []);
+      } else {
+        setRooms([]);
+        setError(data.message || 'No rooms found');
+      }
     } catch (err) {
+      console.error('🚨 Room fetch error:', err);
       setError('Failed to load rooms: ' + err.message);
+      setRooms([]);
     } finally {
       setLoading(false);
     }
@@ -94,26 +107,37 @@ const RoomManagement = () => {
 
   const fetchHotels = async () => {
     try {
-      const token = localStorage.getItem('adminToken');
+      console.log('🏨 Fetching hotels for room management...');
       const response = await fetch(adminApi.hotels(), {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       });
 
       if (response.ok) {
         const data = await response.json();
-        setHotels(data);
+        console.log('🏨 Hotels data for rooms:', data);
+        
+        if (data.success) {
+          setHotels(data.data?.hotels || []);
+        } else {
+          setHotels([]);
+        }
+      } else {
+        const errorData = await response.json();
+        console.error('🚨 Hotel fetch failed:', errorData);
+        setError('Failed to load hotels');
       }
     } catch (err) {
-      console.error('Failed to fetch hotels:', err);
+      console.error('🚨 Hotel fetch error for rooms:', err);
+      setError('Failed to load hotels: ' + err.message);
     }
   };
 
   const handleSaveRoom = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('adminToken');
       
       const roomData = {
         ...formData,
