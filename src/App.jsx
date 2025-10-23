@@ -23,8 +23,9 @@ function App() {
   return (
     <>
       <Routes>
-        {/* Admin Panel Route - Hidden and accessible only via direct URL */}
+        {/* Admin Panel Routes - Multiple access points */}
         <Route path="/admin-secret-panel-2024" element={<AdminPanel />} />
+        <Route path="/admin" element={<AdminPanel />} />
         
         {/* Public Routes with Navigation and Footer */}
         <Route path="/*" element={
