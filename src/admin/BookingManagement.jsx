@@ -370,7 +370,7 @@ const BookingManagement = ({ token }) => {
               </thead>
               <tbody>
                 {filteredBookings.map(booking => (
-                  <tr key={booking.id}>
+                  <tr key={booking._id || booking.id}>
                     <td>
                       <div className="guest-info">
                         <div className="guest-name">{booking.guestName}</div>
@@ -394,19 +394,19 @@ const BookingManagement = ({ token }) => {
                       </div>
                     </td>
                     <td>
-                      <div className="guest-count">👥 {booking.guests}</div>
+                      <div className="guest-count">👥 {typeof booking.guests === 'object' ? ((booking.guests.adults || 0) + (booking.guests.children || 0)) : booking.guests}</div>
                     </td>
                     <td>
-                      <div className="total-price">${booking.totalPrice}</div>
+                      <div className="total-price">${booking.totalPrice || booking.totalAmount || 0}</div>
                     </td>
                     <td>
-                      <span className={`status-badge ${booking.status}`}>
-                        {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                      <span className={`status-badge ${booking.status || ''}`}>
+                        {(booking.status || '').charAt(0).toUpperCase() + (booking.status || '').slice(1)}
                       </span>
                     </td>
                     <td>
-                      <span className={`payment-badge ${booking.paymentStatus}`}>
-                        {booking.paymentStatus.charAt(0).toUpperCase() + booking.paymentStatus.slice(1)}
+                      <span className={`payment-badge ${booking.paymentStatus || ''}`}>
+                        {(booking.paymentStatus || '').charAt(0).toUpperCase() + (booking.paymentStatus || '').slice(1)}
                       </span>
                     </td>
                     <td>
@@ -414,7 +414,7 @@ const BookingManagement = ({ token }) => {
                         <button className="edit-button" onClick={() => openEditModal(booking)}>
                           Edit
                         </button>
-                        <button className="delete-button" onClick={() => handleDeleteBooking(booking.id)}>
+                        <button className="delete-button" onClick={() => handleDeleteBooking(booking._id || booking.id)}>
                           Delete
                         </button>
                       </div>
