@@ -1,8 +1,19 @@
 import axios from 'axios';
 
 // API configuration
-// CRITICAL FIX: Remove /api from fallback URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://smart-lodge-ai-hotel-booking-backen-dusky.vercel.app';
+// Ensure the base URL always points to the backend root and includes the '/api' prefix
+// Frontend endpoints call paths like '/hotels', so the server must be reached at '<BASE>/api'
+const RAW_API_BASE = import.meta.env.VITE_API_URL || 'https://smart-lodge-ai-hotel-booking-backen-dusky.vercel.app';
+// Normalize: remove trailing slash, then append '/api' unless it's already present
+const API_BASE_URL = (() => {
+  try {
+    const cleaned = RAW_API_BASE.replace(/\/+$/, '');
+    if (cleaned.endsWith('/api')) return cleaned;
+    return `${cleaned}/api`;
+  } catch (e) {
+    return RAW_API_BASE;
+  }
+})();
 
 // Create axios instance with default config
 const axiosInstance = axios.create({
@@ -12,6 +23,8 @@ const axiosInstance = axios.create({
   },
   timeout: 10000, // 10 second timeout
 });
+
+console.log('API base URL set to:', API_BASE_URL);
 
 // Get Clerk session token
 async function getClerkToken() {
