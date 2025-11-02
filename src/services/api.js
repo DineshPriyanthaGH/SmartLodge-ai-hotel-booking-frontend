@@ -324,11 +324,23 @@ export const apiUtils = {
   }
 };
 
+// Chatbot API functions
+export const chatAPI = {
+  // Send message to AI chatbot
+  sendMessage: async (message, history = []) => {
+    return apiRequest('/chat/ask', {
+      method: 'POST',
+      data: { message, history },
+    });
+  }
+};
+
 export default {
   hotelAPI,
   bookingAPI,
   userAPI,
   paymentAPI,
   reviewAPI,
+   chatAPI,
   apiUtils
 };

@@ -18,6 +18,7 @@ import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import EmailVerification from './components/EmailVerification';
 import AdminPanel from './admin/AdminPanel';
+import Chatbot from './components/Chatbot';
 
 function App() {
   return (
@@ -57,6 +58,8 @@ function App() {
               />
             </Routes>
             <Footer />
+            {/* Global chatbot floating widget */}
+            <Chatbot />
           </>
         } />
       </Routes>
