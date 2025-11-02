@@ -64,7 +64,7 @@ function Footer() {
         {/* Bottom Section */}
         <div className="border-t border-gray-700 mt-8 pt-8 text-center">
           <p className="text-gray-400 text-sm">
-            © 2025 SmartLodge. All rights reserved. | Made with ❤️ for travelers worldwide
+            © 2025 SmartLodge. All rights reserved. 
           </p>
         </div>
       </div>
