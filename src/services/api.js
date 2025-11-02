@@ -76,7 +76,16 @@ axiosInstance.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    console.error('API Request Error:', error.response || error);
+    // Only log detailed errors for unexpected issues
+    const isExpectedError = error.response?.status === 500 && 
+                           error.config?.url?.includes('/chat/ask') &&
+                           error.response?.data?.code === 'MISSING_API_KEY';
+    
+    if (!isExpectedError) {
+      console.error('API Request Error:', error.response || error);
+    } else {
+      console.info('🤖 Chat service temporarily unavailable (API key configuration needed)');
+    }
     
     if (error.response?.status === 401) {
       console.error('Authentication failed - redirecting to login');
@@ -106,7 +115,14 @@ async function apiRequest(endpoint, options = {}) {
 
     return await axiosInstance(config);
   } catch (error) {
-    console.error(`API Request Error (${endpoint}):`, error);
+    // Only log detailed errors for unexpected issues
+    const isExpectedChatError = endpoint.includes('/chat/ask') && 
+                               error.response?.status === 500 &&
+                               error.response?.data?.code === 'MISSING_API_KEY';
+    
+    if (!isExpectedChatError) {
+      console.error(`API Request Error (${endpoint}):`, error);
+    }
     throw error;
   }
 }

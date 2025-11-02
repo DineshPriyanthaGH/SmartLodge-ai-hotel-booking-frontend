@@ -1,7 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import LoadingSpinner from './components/LoadingSpinner';
+import { 
+  Plus, 
+  Search, 
+  Edit2, 
+  Trash2, 
+  Star, 
+  MapPin, 
+  DollarSign,
+  Loader2,
+  Hotel,
+  Bed,
+  Users,
+  Wifi,
+  Save,
+  X
+} from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
 import { adminApi } from '../config/api';
-import './RoomManagement.css';
 
 const RoomManagement = ({ token }) => {
   const [rooms, setRooms] = useState([]);
@@ -293,43 +309,50 @@ const RoomManagement = ({ token }) => {
 
   if (loading && rooms.length === 0) {
     return (
-      <div className="room-management">
-        <LoadingSpinner message="Loading rooms..." />
+      <div className="flex items-center justify-center min-h-64">
+        <div className="flex flex-col items-center space-y-2">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Loading rooms...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="room-management">
-      <div className="management-header">
-        <h2>Room Management</h2>
-        <button className="add-button" onClick={openAddModal}>
-          + Add New Room
-        </button>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-foreground">Room Management</h2>
+        <Button onClick={openAddModal}>
+          <Plus className="mr-2 h-4 w-4" />
+          Add New Room
+        </Button>
       </div>
 
       {error && (
-        <div className="error-message">
+        <div className="bg-destructive/15 border border-destructive/20 text-destructive px-4 py-3 rounded-md flex items-center justify-between">
           <span>{error}</span>
-          <button className="close-error" onClick={() => setError('')}>×</button>
+          <Button variant="ghost" size="sm" onClick={() => setError('')}>
+            <X className="h-4 w-4" />
+          </Button>
         </div>
       )}
 
-      <div className="filters-bar">
-        <div className="search-bar">
-          <input
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
             type="text"
-            className="search-input"
             placeholder="Search rooms by name, type, or hotel..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
           />
         </div>
-        <div className="hotel-filter">
+        <div className="w-full sm:w-64">
           <select
-            className="hotel-select"
             value={selectedHotel}
             onChange={(e) => setSelectedHotel(e.target.value)}
+            className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
           >
             <option value="">All Hotels</option>
             {hotels.map(hotel => (
@@ -339,56 +362,93 @@ const RoomManagement = ({ token }) => {
         </div>
       </div>
 
-      <div className="rooms-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredRooms.length === 0 ? (
-          <div className="empty-state">
-            <h3>No rooms found</h3>
-            <p>Start by adding your first room or adjust your search filters.</p>
-            <button className="add-button" onClick={openAddModal}>
-              + Add First Room
-            </button>
+          <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
+            <Bed className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">No rooms found</h3>
+            <p className="text-muted-foreground mb-4">Start by adding your first room or adjust your search filters.</p>
+            <Button onClick={openAddModal}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add First Room
+            </Button>
           </div>
         ) : (
           filteredRooms.map(room => (
-            <div key={room.id} className="room-card">
-              <div className="room-image">
+            <div key={room.id} className="bg-card border border-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+              <div className="relative h-48">
                 {room.images && room.images.length > 0 ? (
-                  <img src={room.images[0]} alt={room.name} />
+                  <img 
+                    src={room.images[0]} 
+                    alt={room.name}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
-                  <div className="no-image">🛏️</div>
+                  <div className="w-full h-full bg-muted flex items-center justify-center">
+                    <Bed className="h-12 w-12 text-muted-foreground" />
+                  </div>
                 )}
-                <div className={`availability-badge ${room.availability}`}>
-                  {room.availability === 'available' ? '✅ Available' : '❌ Booked'}
+                <div className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-medium ${
+                  room.availability === 'available' 
+                    ? 'bg-green-100 text-green-800 border border-green-200' 
+                    : 'bg-red-100 text-red-800 border border-red-200'
+                }`}>
+                  {room.availability === 'available' ? 'Available' : 'Booked'}
                 </div>
               </div>
               
-              <div className="room-content">
-                <h3>{room.name}</h3>
-                <p className="room-type">{room.type}</p>
-                <p className="room-hotel">🏨 {getHotelName(room.hotelId)}</p>
-                <p className="room-price">${room.pricePerNight}/night</p>
-                <p className="room-occupancy">👥 Max {room.maxOccupancy} guests</p>
-                <p className="room-size">📐 {room.size} sq ft</p>
+              <div className="p-4 space-y-3">
+                <div>
+                  <h3 className="font-semibold text-foreground">{room.name}</h3>
+                  <p className="text-sm text-muted-foreground">{room.type}</p>
+                </div>
+                
+                <div className="space-y-1 text-sm">
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <Hotel className="h-3 w-3" />
+                    {getHotelName(room.hotelId)}
+                  </div>
+                  <div className="flex items-center gap-1 text-primary font-medium">
+                    <DollarSign className="h-3 w-3" />
+                    {room.pricePerNight}/night
+                  </div>
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <Users className="h-3 w-3" />
+                    Max {room.maxOccupancy} guests
+                  </div>
+                  {room.size && (
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                      <MapPin className="h-3 w-3" />
+                      {room.size} sq ft
+                    </div>
+                  )}
+                </div>
                 
                 {room.amenities && room.amenities.length > 0 && (
-                  <div className="room-amenities">
+                  <div className="flex flex-wrap gap-1">
                     {room.amenities.slice(0, 3).map((amenity, index) => (
-                      <span key={index} className="amenity-tag">{amenity}</span>
+                      <span key={index} className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full">
+                        {amenity}
+                      </span>
                     ))}
                     {room.amenities.length > 3 && (
-                      <span className="amenity-tag">+{room.amenities.length - 3} more</span>
+                      <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full">
+                        +{room.amenities.length - 3} more
+                      </span>
                     )}
                   </div>
                 )}
               </div>
               
-              <div className="room-actions">
-                <button className="edit-button" onClick={() => openEditModal(room)}>
+              <div className="px-4 pb-4 flex gap-2">
+                <Button variant="outline" size="sm" onClick={() => openEditModal(room)} className="flex-1">
+                  <Edit2 className="mr-1 h-3 w-3" />
                   Edit
-                </button>
-                <button className="delete-button" onClick={() => handleDeleteRoom(room.id)}>
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => handleDeleteRoom(room.id)} className="flex-1 text-destructive hover:text-destructive">
+                  <Trash2 className="mr-1 h-3 w-3" />
                   Delete
-                </button>
+                </Button>
               </div>
             </div>
           ))
@@ -396,18 +456,20 @@ const RoomManagement = ({ token }) => {
       </div>
 
       {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="room-form-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>{editingRoom ? 'Edit Room' : 'Add New Room'}</h3>
-              <button className="close-modal" onClick={() => setShowModal(false)}>×</button>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setShowModal(false)}>
+          <div className="bg-card border border-border rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h3 className="text-lg font-semibold">{editingRoom ? 'Edit Room' : 'Add New Room'}</h3>
+              <Button variant="ghost" size="sm" onClick={() => setShowModal(false)}>
+                <X className="h-4 w-4" />
+              </Button>
             </div>
             
-            <form className="room-form" onSubmit={(e) => { e.preventDefault(); handleSaveRoom(); }}>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Room Name</label>
-                  <input
+            <form className="p-6 space-y-4" onSubmit={(e) => { e.preventDefault(); handleSaveRoom(); }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Room Name *</label>
+                  <Input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -415,12 +477,13 @@ const RoomManagement = ({ token }) => {
                     required
                   />
                 </div>
-                <div className="form-group">
-                  <label>Hotel</label>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Hotel *</label>
                   <select
                     value={formData.hotelId}
                     onChange={(e) => setFormData({...formData, hotelId: e.target.value})}
                     required
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   >
                     <option value="">Select a hotel</option>
                     {hotels.map(hotel => (
@@ -430,13 +493,14 @@ const RoomManagement = ({ token }) => {
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Room Type</label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Room Type *</label>
                   <select
                     value={formData.type}
                     onChange={(e) => setFormData({...formData, type: e.target.value})}
                     required
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   >
                     <option value="">Select room type</option>
                     {roomTypes.map(type => (

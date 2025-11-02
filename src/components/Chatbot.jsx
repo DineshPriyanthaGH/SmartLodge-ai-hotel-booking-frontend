@@ -38,8 +38,28 @@ function Chatbot() {
       const reply = resp?.data?.reply || 'Sorry, I could not generate a response.';
       setMessages((m) => [...m, { id: `m-${Date.now()}`, role: 'model', text: reply }]);
     } catch (e) {
-      console.error('Chat error:', e);
-      setMessages((m) => [...m, { id: `e-${Date.now()}`, role: 'model', text: 'I had trouble reaching the AI service. Please try again.' }]);
+      // Provide specific error messages based on the error type
+      let errorMessage = 'I had trouble reaching the AI service. Please try again.';
+      
+      if (e.response?.status === 500) {
+        if (e.response?.data?.code === 'MISSING_API_KEY' || e.response?.data?.message?.includes('GEMINI_API_KEY')) {
+          errorMessage = 'The AI service is temporarily unavailable. Our team has been notified and is working to restore it.';
+          console.info('🤖 Chat service needs API key configuration');
+        } else {
+          errorMessage = 'The AI service encountered an error. Please try again in a moment.';
+          console.error('Chat service error:', e.response?.data || e.message);
+        }
+      } else if (e.response?.status === 502) {
+        errorMessage = 'The AI service is experiencing issues. Please try again in a moment.';
+        console.error('Chat upstream error:', e.response?.data || e.message);
+      } else if (e.code === 'NETWORK_ERROR' || !navigator.onLine) {
+        errorMessage = 'Please check your internet connection and try again.';
+        console.warn('Network connectivity issue');
+      } else {
+        console.error('Unexpected chat error:', e);
+      }
+      
+      setMessages((m) => [...m, { id: `e-${Date.now()}`, role: 'model', text: errorMessage }]);
     } finally {
       setSending(false);
     }
