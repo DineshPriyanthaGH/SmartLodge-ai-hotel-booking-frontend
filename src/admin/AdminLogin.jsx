@@ -18,8 +18,11 @@ const AdminLogin = ({ onLogin }) => {
     setError('');
 
     try {
-      console.log('🔐 Admin login attempt:', { username: credentials.username });
-      console.log('🌐 Login URL:', adminApi.login());
+      // Admin login logging only in development
+      if (import.meta.env.DEV) {
+        console.log('🔐 Admin login attempt:', { username: credentials.username });
+        console.log('🌐 Login URL:', adminApi.login());
+      }
       
       const response = await fetch(adminApi.login(), {
         method: 'POST',
@@ -29,21 +32,31 @@ const AdminLogin = ({ onLogin }) => {
         body: JSON.stringify(credentials)
       });
 
-      console.log('📡 Login response status:', response.status);
+      if (import.meta.env.DEV) {
+        console.log('📡 Login response status:', response.status);
+      }
       const data = await response.json();
-      console.log('📋 Login response data:', data);
+      if (import.meta.env.DEV) {
+        console.log('📋 Login response data:', data);
+      }
 
       if (data.success) {
-        console.log('✅ Login successful, storing token...');
+        if (import.meta.env.DEV) {
+          console.log('✅ Login successful, storing token...');
+        }
         localStorage.setItem('adminToken', data.data.token);
         localStorage.setItem('adminUser', JSON.stringify(data.data.admin));
         onLogin(data.data.token, data.data.admin);
       } else {
-        console.error('❌ Login failed:', data.message);
+        if (import.meta.env.DEV) {
+          console.error('❌ Login failed:', data.message);
+        }
         setError(data.message || 'Login failed');
       }
     } catch (err) {
-      console.error('🚨 Login network error:', err);
+      if (import.meta.env.DEV) {
+        console.error('🚨 Login network error:', err);
+      }
       setError('Network error. Please try again.');
     } finally {
       setLoading(false);

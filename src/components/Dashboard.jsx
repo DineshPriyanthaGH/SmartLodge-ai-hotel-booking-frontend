@@ -17,12 +17,19 @@ function DashboardContent() {
   const [activeTab, setActiveTab] = useState('bookings')
 
   useEffect(() => {
-    if (user) {
+    let isMounted = true;
+    
+    if (user && isMounted) {
       fetchUserData()
       if (activeTab === 'reviews') {
         fetchUserReviews()
       }
     }
+    
+    // Cleanup function to prevent memory leaks
+    return () => {
+      isMounted = false;
+    };
   }, [user, activeTab])
 
   const fetchUserData = async () => {
@@ -48,14 +55,28 @@ function DashboardContent() {
       if (response.success && response.data) {
         // The API now returns bookings directly in response.data (array)
         const bookingsArray = Array.isArray(response.data) ? response.data : (response.data.bookings || []);
-        const formattedBookings = bookingsArray.map(apiUtils.formatBookingData)
+        
+        // Debug: Log first booking structure if in development
+        if (import.meta.env.DEV && bookingsArray.length > 0) {
+          console.log('📊 Sample booking data structure:', bookingsArray[0]);
+        }
+        
+        const formattedBookings = bookingsArray
+          .map(apiUtils.formatBookingData)
+          .filter(booking => booking !== null); // Filter out null bookings
         setBookings(formattedBookings)
-        console.log(`✅ Loaded ${formattedBookings.length} bookings from ${response.metadata?.source || 'unknown'} source`)
+        // Only log in development
+        if (import.meta.env.DEV) {
+          console.log(`✅ Loaded ${formattedBookings.length} bookings from ${response.metadata?.source || 'unknown'} source`)
+        }
       } else {
         setError('Failed to load bookings')
       }
     } catch (err) {
-      console.error('Error fetching bookings:', err)
+      // Essential error logging only
+      if (import.meta.env.DEV) {
+        console.error('Error fetching bookings:', err)
+      }
       
       if (err.response?.status === 404) {
         setError('Booking system is being set up. Please try again shortly.')
@@ -86,7 +107,9 @@ function DashboardContent() {
           favoriteDestination: 'Coming Soon'
         })
       } else {
-        console.error('Error fetching user stats:', err)
+        if (import.meta.env.DEV) {
+          console.error('Error fetching user stats:', err)
+        }
       }
     }
   }
@@ -100,7 +123,9 @@ function DashboardContent() {
         setReviews(response.data.reviews || [])
       }
     } catch (err) {
-      console.error('Error fetching reviews:', err)
+      if (import.meta.env.DEV) {
+        console.error('Error fetching reviews:', err)
+      }
     } finally {
       setReviewsLoading(false)
     }
@@ -113,7 +138,9 @@ function DashboardContent() {
       await reviewAPI.deleteReview(reviewId)
       setReviews(reviews.filter(review => review._id !== reviewId))
     } catch (err) {
-      console.error('Error deleting review:', err)
+      if (import.meta.env.DEV) {
+        console.error('Error deleting review:', err)
+      }
       alert('Failed to delete review')
     }
   }

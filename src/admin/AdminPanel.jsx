@@ -11,7 +11,9 @@ const AdminPanel = () => {
 
   useEffect(() => {
     // TEMPORARY: Clear any old tokens to force fresh login
-    console.log('🧹 Clearing old admin tokens for fresh login...');
+    if (import.meta.env.DEV) {
+      console.log('🧹 Clearing old admin tokens for fresh login...');
+    }
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUser');
     setLoading(false);

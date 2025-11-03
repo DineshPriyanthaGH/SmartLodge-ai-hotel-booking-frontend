@@ -329,20 +329,56 @@ export const apiUtils = {
 
   // Format booking data for frontend
   formatBookingData: (booking) => {
-    return {
-      id: booking._id,
-      reference: booking.bookingReference,
-      hotel: booking.hotel,
-      checkIn: new Date(booking.dates.checkIn),
-      checkOut: new Date(booking.dates.checkOut),
-      nights: booking.dates.nights,
-      guests: booking.guests,
-      status: booking.status,
-      total: booking.pricing.total,
-      currency: booking.pricing.currency,
-      guestDetails: booking.guestDetails,
-      createdAt: new Date(booking.createdAt)
-    };
+    // Handle null/undefined booking
+    if (!booking) {
+      console.warn('formatBookingData: Received null/undefined booking');
+      return null;
+    }
+
+    // Handle different booking data structures
+    try {
+      return {
+        id: booking._id || booking.id,
+        reference: booking.bookingReference || booking.reference || booking.id,
+        hotel: booking.hotelName || booking.hotel?.name || booking.hotel || 'Unknown Hotel',
+        // Handle backend date formats: checkInDate, checkIn, or dates.checkIn
+        checkIn: booking.checkInDate ? new Date(booking.checkInDate) : 
+                 booking.dates?.checkIn ? new Date(booking.dates.checkIn) : 
+                 booking.checkIn ? new Date(booking.checkIn) : null,
+        checkOut: booking.checkOutDate ? new Date(booking.checkOutDate) : 
+                  booking.dates?.checkOut ? new Date(booking.dates.checkOut) : 
+                  booking.checkOut ? new Date(booking.checkOut) : null,
+        nights: booking.dates?.nights || booking.nights || 1,
+        guests: booking.guests || booking.numberOfGuests || 1,
+        status: booking.status || 'pending',
+        total: booking.totalPrice || booking.pricing?.total || booking.total || 0,
+        currency: booking.pricing?.currency || booking.currency || 'USD',
+        guestDetails: booking.guestDetails || {
+          name: booking.guestName,
+          email: booking.guestEmail
+        },
+        roomType: booking.roomType,
+        bookingDate: booking.bookingDate,
+        createdAt: booking.createdAt ? new Date(booking.createdAt) : 
+                   booking.bookingDate ? new Date(booking.bookingDate) : new Date()
+      };
+    } catch (error) {
+      console.error('Error formatting booking data:', error, booking);
+      return {
+        id: booking._id || booking.id || 'unknown',
+        reference: 'ERROR',
+        hotel: 'Error Loading Hotel',
+        checkIn: null,
+        checkOut: null,
+        nights: 0,
+        guests: 0,
+        status: 'error',
+        total: 0,
+        currency: 'USD',
+        guestDetails: {},
+        createdAt: new Date()
+      };
+    }
   }
 };
 

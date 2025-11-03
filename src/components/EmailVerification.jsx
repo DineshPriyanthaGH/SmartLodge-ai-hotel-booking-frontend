@@ -54,12 +54,14 @@ const EmailVerification = () => {
 
   const syncUserWithBackend = async (completedSignUp) => {
     try {
-      console.log('Syncing user with backend...', {
-        clerkId: completedSignUp.createdUserId,
-        email: completedSignUp.emailAddress,
-        firstName: completedSignUp.firstName,
-        lastName: completedSignUp.lastName,
-      });
+      if (import.meta.env.DEV) {
+        console.log('Syncing user with backend...', {
+          clerkId: completedSignUp.createdUserId,
+          email: completedSignUp.emailAddress,
+          firstName: completedSignUp.firstName,
+          lastName: completedSignUp.lastName,
+        });
+      }
 
       // Try multiple endpoints for user sync
       const endpoints = [
@@ -78,7 +80,9 @@ const EmailVerification = () => {
 
       for (const endpoint of endpoints) {
         try {
-          console.log(`Trying endpoint: ${endpoint}`);
+          if (import.meta.env.DEV) {
+            console.log(`Trying endpoint: ${endpoint}`);
+          }
           const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
@@ -90,7 +94,9 @@ const EmailVerification = () => {
           const result = await response.json();
           
           if (response.ok) {
-            console.log('User successfully synced with backend:', result);
+            if (import.meta.env.DEV) {
+              console.log('User successfully synced with backend:', result);
+            }
             return; // Success, exit the loop
           } else {
             console.warn(`Endpoint ${endpoint} failed:`, result);

@@ -80,7 +80,9 @@ function HotelDetailContent() {
           setError('Hotel not found');
         }
       } catch (err) {
-        console.error('Error fetching hotel:', err);
+        if (import.meta.env.DEV) {
+          console.error('Error fetching hotel:', err);
+        }
         setError('Failed to load hotel details');
       } finally {
         setLoading(false);
@@ -200,13 +202,18 @@ function HotelDetailContent() {
   };
 
   const handleBookNowClick = () => {
-    console.log('Book Now clicked!');
-    console.log('Hotel ID:', hotel?.id);
-    console.log('Availability status:', availabilityStatus);
-    console.log('Booking data:', bookingData);
+    // Debug logging only in development
+    if (import.meta.env.DEV) {
+      console.log('Book Now clicked!');
+      console.log('Hotel ID:', hotel?.id);
+      console.log('Availability status:', availabilityStatus);
+      console.log('Booking data:', bookingData);
+    }
     
     if (!hotel?.id) {
-      console.error('Hotel ID is missing!');
+      if (import.meta.env.DEV) {
+        console.error('Hotel ID is missing!');
+      }
       alert('Error: Hotel information not loaded properly. Please refresh the page.');
       return;
     }
@@ -232,19 +239,25 @@ function HotelDetailContent() {
         nights: calculateNights()
       };
       
-      console.log('Booking info to save:', bookingInfo);
+      if (import.meta.env.DEV) {
+        console.log('Booking info to save:', bookingInfo);
+        console.log('Navigating to:', `/checkout/${hotel.id}`);
+      }
       sessionStorage.setItem('bookingData', JSON.stringify(bookingInfo));
-      console.log('Navigating to:', `/checkout/${hotel.id}`);
       navigate(`/checkout/${hotel.id}`);
     } else {
-      console.log('Availability status prevents booking:', availabilityStatus);
+      if (import.meta.env.DEV) {
+        console.log('Availability status prevents booking:', availabilityStatus);
+      }
       alert(`Cannot proceed with booking. Status: ${availabilityStatus}. Please check your dates and try again.`);
     }
   };
 
   const handleReviewSubmit = async (reviewData) => {
     try {
-      console.log('Submitting review:', reviewData);
+      if (import.meta.env.DEV) {
+        console.log('Submitting review:', reviewData);
+      }
       await reviewAPI.createReview(reviewData);
       setIsReviewModalOpen(false);
       
@@ -256,7 +269,9 @@ function HotelDetailContent() {
       // const updatedHotel = await hotelAPI.getHotel(id);
       // setHotel(updatedHotel.data);
     } catch (error) {
-      console.error('Failed to submit review:', error);
+      if (import.meta.env.DEV) {
+        console.error('Failed to submit review:', error);
+      }
       alert('Failed to submit review. Please try again.');
     }
   };
