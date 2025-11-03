@@ -46,14 +46,24 @@ function DashboardContent() {
       const response = await bookingAPI.getUserBookings()
       
       if (response.success && response.data) {
-        const formattedBookings = response.data.bookings.map(apiUtils.formatBookingData)
+        // The API now returns bookings directly in response.data (array)
+        const bookingsArray = Array.isArray(response.data) ? response.data : (response.data.bookings || []);
+        const formattedBookings = bookingsArray.map(apiUtils.formatBookingData)
         setBookings(formattedBookings)
+        console.log(`✅ Loaded ${formattedBookings.length} bookings from ${response.metadata?.source || 'unknown'} source`)
       } else {
         setError('Failed to load bookings')
       }
     } catch (err) {
       console.error('Error fetching bookings:', err)
-      setError('Unable to load your bookings. Please try again.')
+      
+      if (err.response?.status === 404) {
+        setError('Booking system is being set up. Please try again shortly.')
+      } else if (err.response?.status >= 500) {
+        setError('Server is experiencing issues. Please try again later.')
+      } else {
+        setError('Unable to load your bookings. Please check your connection and try again.')
+      }
     } finally {
       setLoading(false)
     }
@@ -66,7 +76,18 @@ function DashboardContent() {
         setUserStats(response.data)
       }
     } catch (err) {
-      console.error('Error fetching user stats:', err)
+      // Handle 404 errors more gracefully (endpoint not yet deployed)
+      if (err.response?.status === 404) {
+        console.info('📊 User stats endpoint not yet available')
+        // Set fallback data
+        setUserStats({
+          totalBookings: 'Coming Soon',
+          upcomingBookings: 'Coming Soon',
+          favoriteDestination: 'Coming Soon'
+        })
+      } else {
+        console.error('Error fetching user stats:', err)
+      }
     }
   }
 

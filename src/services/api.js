@@ -77,14 +77,18 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     // Only log detailed errors for unexpected issues
-    const isExpectedError = error.response?.status === 500 && 
-                           error.config?.url?.includes('/chat/ask') &&
-                           error.response?.data?.code === 'MISSING_API_KEY';
+    const isExpectedChatError = error.response?.status === 500 && 
+                               error.config?.url?.includes('/chat/ask') &&
+                               error.response?.data?.code === 'MISSING_API_KEY';
     
-    if (!isExpectedError) {
+    const is404Error = error.response?.status === 404;
+    
+    if (!isExpectedChatError && !is404Error) {
       console.error('API Request Error:', error.response || error);
-    } else {
+    } else if (isExpectedChatError) {
       console.info('🤖 Chat service temporarily unavailable (API key configuration needed)');
+    } else if (is404Error) {
+      console.info(`🔍 API endpoint not found: ${error.config?.url}`);
     }
     
     if (error.response?.status === 401) {
@@ -120,7 +124,9 @@ async function apiRequest(endpoint, options = {}) {
                                error.response?.status === 500 &&
                                error.response?.data?.code === 'MISSING_API_KEY';
     
-    if (!isExpectedChatError) {
+    const is404Error = error.response?.status === 404;
+    
+    if (!isExpectedChatError && !is404Error) {
       console.error(`API Request Error (${endpoint}):`, error);
     }
     throw error;
