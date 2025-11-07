@@ -149,11 +149,7 @@ export default function Hero() {
             <p className="text-sm text-white/80">Smart recommendations based on your preferences</p>
           </div>
           <div className="text-center">
-            <div className="bg-white/20 backdrop-blur-sm rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <Plus className="w-8 h-8" />
-            </div>
-            <h3 className="font-bold text-lg mb-2">Best Prices</h3>
-            <p className="text-sm text-white/80">Compare prices from thousands of hotels worldwide</p>
+            
           </div>
           <div className="text-center">
             <div className="bg-white/20 backdrop-blur-sm rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
